@@ -1,0 +1,35 @@
+{
+  "name": "@colyseus/stats",
+  "version": "0.1.0",
+  "description": "Realtime Stats for Colyseus",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colyseus/stats.git"
+  },
+  "keywords": [
+    "colyseus",
+    "multiplayer",
+    "stats",
+    "monitoring",
+    "realtime",
+    "websockets"
+  ],
+  "author": "Endel Dreyer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/colyseus/stats/issues"
+  },
+  "homepage": "https://github.com/colyseus/stats#readme",
+  "devDependencies": {
+    "@types/express": "^4.11.0",
+    "memshared": "^0.9.15",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
