@@ -2,11 +2,12 @@
     "compilerOptions": {
         "outDir": "lib",
         "module": "commonjs",
-        "lib": ["es6"],
+        "lib": ["es6", "dom"],
         "target": "es5",
         "declaration": false,
         "noImplicitAny": false,
-        "sourceMap": false
+        "sourceMap": false,
+        "jsx": "react"
     },
     "include": [
       "src/**/*.ts"
