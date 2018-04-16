@@ -2,7 +2,7 @@ import * as http from "http";
 import * as express from "express";
 import * as cors from "cors";
 
-import { Server } from "colyseus";
+import { Server, RedisPresence } from "colyseus";
 import { ChatRoom } from "./ChatRoom";
 import { statsFor } from "../src";
 
@@ -14,7 +14,10 @@ app.use(cors());
 
 // Create HTTP & WebSocket servers
 const server = http.createServer(app);
-const gameServer = new Server({ server });
+const gameServer = new Server({
+    server,
+    presence: new RedisPresence()
+});
 
 // Register ChatRoom as "chat"
 gameServer.register("chat", ChatRoom);

@@ -11,7 +11,7 @@ export function getAPI (server: Server) {
         Promise.all(
             handlers.map((handler) => {
                 return server.matchMaker.
-                    getAvailableRooms(handler).
+                    getAllRooms(handler, 'getRoomListData').
                     then((rooms: any[]) => {
                         result[handler] = rooms;
                     }).
@@ -22,8 +22,20 @@ export function getAPI (server: Server) {
 
     api.get("/room", (req: express.Request, res: express.Response) => {
         const roomId = req.query.roomId;
+
         server.matchMaker.
-            remoteRoomCall(roomId, "getAvailableData").
+            remoteRoomCall(roomId, "getInspectData").
+            then((data: any) => res.json(data)).
+            catch((err) => console.error(err));
+    });
+
+    api.get("/room/call", (req: express.Request, res: express.Response) => {
+        const roomId = req.query.roomId;
+        const method = req.query.method;
+        const args = JSON.parse(req.query.args);
+
+        server.matchMaker.
+            remoteRoomCall(roomId, method, args).
             then((data: any) => res.json(data)).
             catch((err) => console.error(err));
     });
