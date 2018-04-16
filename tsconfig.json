@@ -3,7 +3,7 @@
         "outDir": "lib",
         "module": "commonjs",
         "lib": ["es6", "dom"],
-        "target": "es5",
+        "target": "es6",
         "declaration": false,
         "noImplicitAny": false,
         "sourceMap": false,

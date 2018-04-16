@@ -1,7 +1,14 @@
-// extending Colyseus default behaviour
-import "./ext/Room";
+import * as express from 'express';
+import * as path from "path";
+import { Server } from "colyseus";
+import { getAPI } from './api';
+import './ext/Room';
 
-import { api } from "./api";
+const frontendDirectory = path.resolve(__dirname, "..", "lib", "static");
 
-export function register (options: any) {
+export function statsFor (server: Server) {
+    const stats = express.Router();
+    stats.use('/', express.static(frontendDirectory));
+    stats.use('/api', getAPI(server));
+    return stats;
 }

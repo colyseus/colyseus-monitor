@@ -17,7 +17,7 @@ module.exports = function(options) {
     entry: path.resolve("src", "frontend", "index.tsx"),
 
     output: {
-      path: __dirname + "/dist",
+      path: __dirname + "/lib/static",
       filename: 'bundle.js'
     },
 

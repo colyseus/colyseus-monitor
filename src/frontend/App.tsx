@@ -1,11 +1,13 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { createBrowserHistory, createHashHistory } from "history";
+import { Router, Route, Link } from "react-router-dom";
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Divider from 'material-ui/Divider';
 
 import { CAppBar } from "./components/CAppBar";
 import { RoomList } from "./components/RoomList";
+import { RoomInspect } from "./components/RoomInspect";
 
 import Paper from 'material-ui/Paper';
 import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation';
@@ -17,22 +19,17 @@ const recentsIcon = <FontIcon className="material-icons">restore</FontIcon>;
 const favoritesIcon = <FontIcon className="material-icons">favorite</FontIcon>;
 const nearbyIcon = <IconLocationOn />;
 
+const history = createHashHistory();
+
 export function App () {
     return (
-        <MuiThemeProvider>
-            <CAppBar />
+        <Router history={history}>
+            <MuiThemeProvider>
+                <CAppBar />
 
-            <Divider />
-
-            <RoomList />
-
-            <Router>
-                {/*
-                    <Route exact path="/" component={Home} />
-                    <Route path="/about" component={About} />
-                    <Route path="/topics" component={Topics} />
-                */}
-            </Router>
-        </MuiThemeProvider>
+                <Route exact path="/" component={RoomList} />
+                <Route path="/room/:roomId" component={RoomInspect} />
+            </MuiThemeProvider>
+        </Router>
     );
 }

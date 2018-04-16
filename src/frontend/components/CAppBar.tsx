@@ -38,8 +38,9 @@ export class CAppBar extends React.Component {
         return (<div>
             <AppBar
                 title="Colyseus"
-                iconElementRight={<Refresh />}
-                onLeftIconButtonClick={this.handleToggle}
+                showMenuIconButton={false}
+                // iconElementRight={<Refresh />}
+                // onLeftIconButtonClick={this.handleToggle}
             />
             {/*<Drawer open={this.state.open}>
                 <AppBar
