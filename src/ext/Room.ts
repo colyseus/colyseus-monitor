@@ -2,6 +2,7 @@
 // Monkey-patch Colyseus' default behaviour
 //
 import { Room, Client } from "colyseus";
+import * as msgpack from "notepack.io";
 
 (<any>Room.prototype).getRoomListData = async function () {
     const stateSize = this._previousStateEncoded.byteLength;
@@ -29,6 +30,16 @@ import { Room, Client } from "colyseus";
     for (let i = 0; i < this.clients.length; i++) {
         if (this.clients[i].sessionId === sessionId) {
             this.clients[i].close();
+            break;
+        }
+    }
+};
+
+(<any>Room.prototype)._sendMessageToClient = async function (sessionId, data) {
+    for (let i = 0; i < this.clients.length; i++) {
+        if (this.clients[i].sessionId === sessionId) {
+            console.log("SEND DATA:", data);
+            this.send(this.clients[i], data);
             break;
         }
     }

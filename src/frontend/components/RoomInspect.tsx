@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as http from "superagent";
 import ReactJson from "react-json-view";
+import { JsonEditor } from "react-json-edit";
 
 import { remoteRoomCall, fetchRoomData } from "../services";
 
@@ -39,7 +40,9 @@ export class RoomInspect extends React.Component {
         locked: false,
 
         sendDialogTitle: "",
-        sendDialogOpen: false
+        sendDialogOpen: false,
+        sendToClient: undefined,
+        sendData: {}
     };
 
     updateDataInterval: number;
@@ -73,11 +76,19 @@ export class RoomInspect extends React.Component {
     }
 
     sendMessage(sessionId?: string) {
+        const sendToClient = (sessionId)
+            ? sessionId
+            : undefined;
+
         let sendDialogTitle = (sessionId)
             ? `Send message to client (${sessionId})`
             : "Broadcast message to all clients";
 
-        this.setState({ sendDialogTitle, sendDialogOpen: true });
+        this.setState({
+            sendToClient,
+            sendDialogTitle,
+            sendDialogOpen: true
+        });
     }
 
     disconnectClient(sessionId: string) {
@@ -92,13 +103,21 @@ export class RoomInspect extends React.Component {
             });
     }
 
+    updateSendData = (changes) => {
+        this.state.sendData = changes;
+    }
+
     handleCloseSend = () => {
         this.setState({ sendDialogOpen: false });
     }
 
     handleSend = () => {
-        console.log("SEND MESSAGE!");
-        this.handleCloseSend();
+        console.log("SEND MESSAGE!", this.state.sendData);
+        let promise = (this.state.sendToClient)
+            ? this.roomCall('_sendMessageToClient', this.state.sendToClient, this.state.sendData)
+            : this.roomCall('broadcast', this.state.sendData);
+
+        promise.then(() => this.handleCloseSend());
     }
 
     render() {
@@ -201,7 +220,7 @@ export class RoomInspect extends React.Component {
                     onRequestClose={this.handleCloseSend}
                     autoScrollBodyContent={true}
                 >
-                    <p>Message must be serializeable:</p>
+                    <JsonEditor value={this.state.sendData} propagateChanges={this.updateSendData} />
                 </Dialog>
 
             </div>
