@@ -3,7 +3,7 @@ import * as express from "express";
 
 export function getAPI (server: Server) {
     const api = express.Router();
-    const handlers = Object.keys((<any>server.matchMaker).handlers);
+    const handlers = Object.keys(server.matchMaker.handlers);
 
     api.get("/", (req: express.Request, res: express.Response) => {
         const result: any = {};

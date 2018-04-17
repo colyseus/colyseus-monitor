@@ -2,7 +2,6 @@
 // Monkey-patch Colyseus' default behaviour
 //
 import { Room, Client } from "colyseus";
-import * as msgpack from "notepack.io";
 
 (<any>Room.prototype).getRoomListData = async function () {
     const stateSize = this._previousStateEncoded.byteLength;

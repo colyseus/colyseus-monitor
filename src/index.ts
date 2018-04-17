@@ -6,7 +6,7 @@ import './ext/Room';
 
 const frontendDirectory = path.resolve(__dirname, "..", "lib", "static");
 
-export function statsFor (server: Server) {
+export function monitor (server: Server) {
     const stats = express.Router();
     stats.use('/', express.static(frontendDirectory));
     stats.use('/api', getAPI(server));

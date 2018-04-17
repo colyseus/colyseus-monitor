@@ -4,7 +4,7 @@ import * as cors from "cors";
 
 import { Server, RedisPresence } from "colyseus";
 import { ChatRoom } from "./ChatRoom";
-import { statsFor } from "../src";
+import { monitor } from "../src";
 
 const port = Number(process.env.PORT || 2567);
 const endpoint = "localhost";
@@ -22,7 +22,7 @@ const gameServer = new Server({
 // Register ChatRoom as "chat"
 gameServer.register("chat", ChatRoom);
 
-app.use("/colyseus", statsFor(gameServer));
+app.use("/colyseus", monitor(gameServer));
 
 gameServer.listen(port);
 

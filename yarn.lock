@@ -1537,9 +1537,9 @@ colors@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
 
-colyseus@^0.9.3:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.9.4.tgz#d270ddfbb7b9db92c6115784ebab7531a85f0a0a"
+colyseus@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/colyseus/-/colyseus-0.9.5.tgz#1652d2150a1529f8fe2f370fe418763724a4a019"
   dependencies:
     "@gamestdio/timeline" "^0.3.5"
     "@gamestdio/timer" "^1.1.7"
