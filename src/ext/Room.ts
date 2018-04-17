@@ -38,7 +38,6 @@ import * as msgpack from "notepack.io";
 (<any>Room.prototype)._sendMessageToClient = async function (sessionId, data) {
     for (let i = 0; i < this.clients.length; i++) {
         if (this.clients[i].sessionId === sessionId) {
-            console.log("SEND DATA:", data);
             this.send(this.clients[i], data);
             break;
         }

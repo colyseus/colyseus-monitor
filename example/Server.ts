@@ -16,7 +16,7 @@ app.use(cors());
 const server = http.createServer(app);
 const gameServer = new Server({
     server,
-    presence: new RedisPresence()
+    // presence: new RedisPresence()
 });
 
 // Register ChatRoom as "chat"

@@ -29,6 +29,7 @@ const buttonStyle = { marginRight: 12 };
 
 // fetch room data every 5 seconds.
 const FETCH_DATA_INTERVAL = 5000;
+const SEND_DATA_CACHE = '$$colyseus$data';
 
 export class RoomInspect extends React.Component {
     state = {
@@ -42,7 +43,7 @@ export class RoomInspect extends React.Component {
         sendDialogTitle: "",
         sendDialogOpen: false,
         sendToClient: undefined,
-        sendData: {}
+        sendData: JSON.parse(localStorage.getItem(SEND_DATA_CACHE) || "{}")
     };
 
     updateDataInterval: number;
@@ -104,6 +105,7 @@ export class RoomInspect extends React.Component {
     }
 
     updateSendData = (changes) => {
+        localStorage.setItem(SEND_DATA_CACHE, JSON.stringify(changes));
         this.state.sendData = changes;
     }
 
@@ -112,7 +114,6 @@ export class RoomInspect extends React.Component {
     }
 
     handleSend = () => {
-        console.log("SEND MESSAGE!", this.state.sendData);
         let promise = (this.state.sendToClient)
             ? this.roomCall('_sendMessageToClient', this.state.sendToClient, this.state.sendData)
             : this.roomCall('broadcast', this.state.sendData);
@@ -128,10 +129,10 @@ export class RoomInspect extends React.Component {
                 onClick={this.handleCloseSend}
             />,
             <FlatButton
-                label="Submit"
+                label="Send"
                 primary={true}
-                keyboardFocused={true}
                 onClick={this.handleSend}
+                keyboardFocused={true}
             />,
         ];
 
@@ -218,7 +219,6 @@ export class RoomInspect extends React.Component {
                     modal={false}
                     open={this.state.sendDialogOpen}
                     onRequestClose={this.handleCloseSend}
-                    autoScrollBodyContent={true}
                 >
                     <JsonEditor value={this.state.sendData} propagateChanges={this.updateSendData} />
                 </Dialog>
