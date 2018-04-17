@@ -37,6 +37,15 @@ app.use("/colyseus", monitor(gameServer));
 gameServer.listen(port);
 ```
 
+## Dev Setup
+``` bash
+# install dependencies
+npm install
+
+# serve at localhost:8080
+npm start
+```
+
 ## License
 
 MIT
