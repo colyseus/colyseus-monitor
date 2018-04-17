@@ -15,6 +15,9 @@ import {
   TableFooter,
 } from "material-ui/Table";
 
+import AppBar from "material-ui/AppBar";
+import Chip from 'material-ui/Chip';
+
 import { Tabs, Tab } from 'material-ui/Tabs';
 
 import Dialog from 'material-ui/Dialog';
@@ -22,8 +25,14 @@ import Dialog from 'material-ui/Dialog';
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle';
 import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import SendIcon from 'material-ui/svg-icons/content/send';
+import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
+import HighlightOffIcon from 'material-ui/svg-icons/action/highlight-off';
 
+import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
+
+import IconButton from 'material-ui/IconButton';
 import FlatButton from 'material-ui/FlatButton';
+import { blue300 } from 'material-ui/styles/colors';
 
 const buttonStyle = { marginRight: 12 };
 
@@ -121,6 +130,11 @@ export class RoomInspect extends React.Component {
         promise.then(() => this.handleCloseSend());
     }
 
+    goBack() {
+        const history = (this.props as any).history;
+        history.goBack();
+    }
+
     render() {
         const actions = [
             <FlatButton
@@ -138,17 +152,61 @@ export class RoomInspect extends React.Component {
 
         return (
             <div>
-                <h2>{ this.state.roomId }</h2>
-                <p>
-                    locked: { this.state.locked.toString() }
-                </p>
+                <AppBar
+                    iconElementLeft={
+                    <IconButton onClick={this.goBack.bind(this)}>
+                        <ArrowBackIcon />
+                    </IconButton>
+                    }
+                    title={'Room ' + this.state.roomId}>
+                </AppBar>
+
+                <Table>
+                    <TableBody displayRowCheckbox={false}>
+                        <TableRow>
+                            <TableRowColumn>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    {this.state.locked ? <CheckCircleIcon /> : <HighlightOffIcon />} Locked
+                                </div>
+                            </TableRowColumn>
+                            <TableRowColumn>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    Clients 
+                                    <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
+                                    {this.state.clients.length}{this.state.maxClients ? ' / ' + this.state.maxClients : ''}
+                                    </Chip>
+                                </div>
+                            </TableRowColumn>
+                            <TableRowColumn>
+                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    State Size 
+                                    <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
+                                    {this.state.stateSize} bytes
+                                    </Chip>
+                                </div>
+                            </TableRowColumn>
+                            <TableRowColumn>
+                                <FlatButton
+                                    label="Broadcast"
+                                    icon={<SendIcon />}
+                                    onClick={this.sendMessage.bind(this, undefined)}
+                                    style={buttonStyle}
+                                />
+
+                                <FlatButton
+                                    label="Dispose room"
+                                    secondary={true}
+                                    icon={<DeleteForeverIcon />}
+                                    onClick={this.disposeRoom.bind(this)}
+                                    style={buttonStyle}
+                                />
+                            </TableRowColumn>
+                        </TableRow>
+                    </TableBody>
+                </Table>
 
                 <Tabs>
                     <Tab label="Clients">
-                        <p>
-                            clients: {this.state.clients.length} <br />
-                            maxClients: {this.state.maxClients} <br />
-                        </p>
                         <Table>
                             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                                 <TableRow>
@@ -186,20 +244,6 @@ export class RoomInspect extends React.Component {
                             <TableFooter>
                                 <TableRow>
                                     <TableHeaderColumn style={{ textAlign: "right" }} colSpan={3}>
-                                        <FlatButton
-                                            label="Broadcast"
-                                            icon={<SendIcon />}
-                                            onClick={this.sendMessage.bind(this, undefined)}
-                                            style={buttonStyle}
-                                        />
-
-                                        <FlatButton
-                                            label="Dispose room"
-                                            secondary={true}
-                                            icon={<DeleteForeverIcon />}
-                                            onClick={this.disposeRoom.bind(this)}
-                                            style={buttonStyle}
-                                        />
                                     </TableHeaderColumn>
                                 </TableRow>
                             </TableFooter>
@@ -208,7 +252,6 @@ export class RoomInspect extends React.Component {
                     </Tab>
 
                     <Tab label="State">
-                        <p>state size: {this.state.stateSize} bytes</p>
                         <ReactJson name={null} src={this.state.state} />
                     </Tab>
                 </Tabs>

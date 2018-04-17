@@ -1,6 +1,8 @@
 import * as http from "superagent";
 
-const ENDPOINT = `${window.location.protocol}//${window.location.host}`;
+declare const GAME_SERVER_URL: string;
+
+const ENDPOINT = GAME_SERVER_URL || `${window.location.protocol}//${window.location.host}`;
 
 export function fetchRoomList () {
     return http.get(`${ENDPOINT}/colyseus/api`).

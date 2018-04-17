@@ -37,6 +37,12 @@ app.use("/colyseus", monitor(gameServer));
 gameServer.listen(port);
 ```
 
+## Development
+
+* `npm run start` will start the `colyseus-monitor` UI
+* `npm run start -- --GAME_SERVER_URL="\"http://localhost:3303\""` will start the `colyseus-monitor` UI and connect it to a local or remote colyseus instance
+* `npm run start:server` will start the example server
+
 ## License
 
 MIT
