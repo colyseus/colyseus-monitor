@@ -7,8 +7,8 @@ import './ext/Room';
 const frontendDirectory = path.resolve(__dirname, "..", "lib", "static");
 
 export function monitor (server: Server) {
-    const stats = express.Router();
-    stats.use('/', express.static(frontendDirectory));
-    stats.use('/api', getAPI(server));
-    return stats;
+    const router = express.Router();
+    router.use('/', express.static(frontendDirectory));
+    router.use('/api', getAPI(server));
+    return router;
 }

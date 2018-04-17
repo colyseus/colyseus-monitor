@@ -2,6 +2,8 @@
 
 Web monitoring panel for [Colyseus](https://github.com/gamestdio/colyseus) (v0.9.5+)
 
+**This library is experimental. Use at your own risk.**
+
 <img src="media/screenshot.png?raw=true" />
 
 Consider backing Colyseus development and its support on Patreon.

@@ -1,6 +1,6 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Realtime Stats for Colyseus",
   "main": "lib/index.js",
   "scripts": {

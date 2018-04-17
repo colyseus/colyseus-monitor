@@ -3,7 +3,7 @@ import * as http from "superagent";
 const ENDPOINT = `${window.location.protocol}//${window.location.host}`;
 
 export function fetchRoomList () {
-    return http.get("http://localhost:2567/colyseus/api").
+    return http.get(`http://${ENDPOINT}/colyseus/api`).
       accept('application/json');
 }
 
