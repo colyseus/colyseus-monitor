@@ -1,6 +1,6 @@
 import * as http from "superagent";
 
-const ENDPOINT = "http://localhost:2567";
+const ENDPOINT = `${window.location.protocol}//${window.location.host}`;
 
 export function fetchRoomList () {
     return http.get("http://localhost:2567/colyseus/api").
