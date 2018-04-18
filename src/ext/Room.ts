@@ -4,7 +4,7 @@
 import { Room, Client } from "colyseus";
 
 (<any>Room.prototype).getRoomListData = async function () {
-    const stateSize = this._previousStateEncoded.byteLength;
+    const stateSize = (this._previousStateEncoded && this._previousStateEncoded.byteLength) || 0;
     const elapsedTime = this.clock.elapsedTime;
     const locked = this.locked;
     const data = await this.getAvailableData();
@@ -14,7 +14,7 @@ import { Room, Client } from "colyseus";
 
 (<any>Room.prototype).getInspectData = async function () {
     const state = this.state;
-    const stateSize = this._previousStateEncoded.byteLength;
+    const stateSize = (this._previousStateEncoded && this._previousStateEncoded.byteLength) || 0;
     const data = await this.getAvailableData();
     const clients = this.clients.map((client: Client) => (
         { id: client.id, sessionId: client.sessionId }
