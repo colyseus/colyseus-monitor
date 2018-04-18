@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 
 //
-// DO NOT USE COPY THIS BLOCK ON YOUR ENVIRONMENT
+// DO NOT COPY THIS BLOCK ON YOUR ENVIRONMENT
 // development only
 //
 const webpack = require("webpack");
