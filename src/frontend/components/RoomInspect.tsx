@@ -25,8 +25,8 @@ import Dialog from 'material-ui/Dialog';
 import RemoveIcon from 'material-ui/svg-icons/content/remove-circle';
 import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import SendIcon from 'material-ui/svg-icons/content/send';
-import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle';
-import HighlightOffIcon from 'material-ui/svg-icons/action/highlight-off';
+import LockIcon from 'material-ui/svg-icons/action/lock';
+import UnlockIcon from 'material-ui/svg-icons/action/lock-open';
 
 import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
 
@@ -165,13 +165,14 @@ export class RoomInspect extends React.Component {
                     <TableBody displayRowCheckbox={false}>
                         <TableRow>
                             <TableRowColumn>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
-                                    {this.state.locked ? <CheckCircleIcon /> : <HighlightOffIcon />} Locked
+                                <div style={{display: 'flex', alignItems: 'center', verticalAlign: 'center'}}>
+                                    { (this.state.locked) ? <LockIcon /> : <UnlockIcon /> }
+                                    { (this.state.locked) ? 'Locked' : 'Unlocked' }
                                 </div>
                             </TableRowColumn>
                             <TableRowColumn>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
-                                    Clients 
+                                    Clients
                                     <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
                                     {this.state.clients.length}{this.state.maxClients ? ' / ' + this.state.maxClients : ''}
                                     </Chip>
@@ -179,7 +180,7 @@ export class RoomInspect extends React.Component {
                             </TableRowColumn>
                             <TableRowColumn>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
-                                    State Size 
+                                    State Size
                                     <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
                                     {this.state.stateSize} bytes
                                     </Chip>

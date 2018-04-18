@@ -38,9 +38,6 @@ module.exports = function(options) {
       }),
     ],
 
-    // Disable MAX 250kb entrypoint warnings on console
-    performance: { hints: false },
-
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json']
     }

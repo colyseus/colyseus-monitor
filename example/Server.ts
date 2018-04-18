@@ -1,6 +1,7 @@
 import * as http from "http";
 import * as express from "express";
 import * as cors from "cors";
+import * as path from "path";
 
 import { Server, RedisPresence } from "colyseus";
 import { ChatRoom } from "./ChatRoom";
@@ -11,6 +12,15 @@ const endpoint = "localhost";
 
 const app = express();
 app.use(cors());
+
+//
+// DO NOT USE COPY THIS BLOCK ON YOUR ENVIRONMENT
+// development only
+//
+const webpack = require("webpack");
+const webpackDevMiddleware = require("webpack-dev-middleware");
+const webpackConfig = require("../webpack.config");
+app.use(webpackDevMiddleware(webpack(webpackConfig({ })), { }));
 
 // Create HTTP & WebSocket servers
 const server = http.createServer(app);

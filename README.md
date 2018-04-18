@@ -1,6 +1,6 @@
 # @colyseus/monitor
 
-Web monitoring panel for [Colyseus](https://github.com/gamestdio/colyseus) (v0.9.5+)
+Web Monitoring Panel for [Colyseus](https://github.com/gamestdio/colyseus) (v0.9.5+)
 
 **This library is experimental. Use at your own risk.**
 
@@ -37,11 +37,36 @@ app.use("/colyseus", monitor(gameServer));
 gameServer.listen(port);
 ```
 
+## Authentication
+
+You can use an express middleware to enable authentication on the monitor route, such as `express-basic-middleware`:
+
+```typescript
+import * as basicAuth from "express-basic-auth";
+
+const basicAuthMiddleware = basicAuth({
+    // list of users and passwords
+    users: {
+        "admin": "admin",
+    },
+    // sends WWW-Authenticate header, which will prompt the user to fill
+    // credentials in
+    challenge: true
+});
+
+app.use("/colyseus", basicAuthMiddleware, monitor(gameServer));
+```
+
 ## Development
 
-* `npm run start` will start the `colyseus-monitor` UI
-* `npm run start -- --GAME_SERVER_URL="\"http://localhost:3303\""` will start the `colyseus-monitor` UI and connect it to a local or remote colyseus instance
-* `npm run start:server` will start the example server
+Install the dependencies and start the dev-server:
+
+```
+npm install
+npm start
+```
+
+Access the UI on [http://localhost:2567/](http://localhost:2567/).
 
 ## License
 
