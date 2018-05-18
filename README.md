@@ -66,7 +66,7 @@ npm install
 npm start
 ```
 
-Access the UI on [http://localhost:2567/](http://localhost:2567/).
+Access the UI on [http://localhost:2567/colyseus](http://localhost:2567/colyseus).
 
 ## License
 
