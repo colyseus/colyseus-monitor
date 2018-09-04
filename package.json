@@ -36,7 +36,7 @@
     "colyseus": "^0.9.5",
     "cors": "^2.8.4",
     "css-loader": "^0.28.11",
-    "extract-text--plugin": "^4.0.0-beta.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "material-ui": "^0.20.0",
