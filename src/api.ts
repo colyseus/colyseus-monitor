@@ -1,6 +1,8 @@
 import { Server } from "colyseus";
 import * as express from "express";
 
+const UNAVAILABLE_ROOM_ERROR = "@colyseus/monitor: room $roomId is not available anymore.";
+
 export function getAPI (server: Server) {
     const api = express.Router();
     const handlers = Object.keys(server.matchMaker.handlers);
@@ -26,7 +28,9 @@ export function getAPI (server: Server) {
         server.matchMaker.
             remoteRoomCall(roomId, "getInspectData").
             then((data: any) => res.json(data)).
-            catch((err) => console.error(err));
+            catch((_) => {
+                console.error(UNAVAILABLE_ROOM_ERROR.replace("$roomId", roomId));
+            });
     });
 
     api.get("/room/call", (req: express.Request, res: express.Response) => {
@@ -37,7 +41,9 @@ export function getAPI (server: Server) {
         server.matchMaker.
             remoteRoomCall(roomId, method, args).
             then((data: any) => res.json(data)).
-            catch((err) => console.error(err));
+            catch((_) => {
+                console.error(UNAVAILABLE_ROOM_ERROR.replace("$roomId", roomId));
+            });
     });
 
     return api;

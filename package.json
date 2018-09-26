@@ -1,8 +1,9 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.1.7",
+  "version": "0.1.10",
   "description": "Web Monitoring Panel for Colyseus",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "start": "ts-node example/Server",
     "build": "webpack --env.production",
@@ -50,7 +51,7 @@
     "superagent": "^3.8.2",
     "ts-loader": "^4.2.0",
     "ts-node": "^5.0.1",
-    "typescript": "^2.8.1",
+    "typescript": "^3.0.3",
     "webpack": "^4.5.0",
     "webpack-cli": "^2.0.14",
     "webpack-dev-middleware": "^3.1.2",
