@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { createBrowserHistory, createHashHistory } from "history";
 import { Router, Route, Link } from "react-router-dom";
 

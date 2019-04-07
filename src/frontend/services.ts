@@ -1,4 +1,4 @@
-import * as http from "superagent";
+import http from "superagent";
 
 const ENDPOINT = process.env.GAME_SERVER_URL ||
     `${window.location.protocol}//${window.location.host}`;

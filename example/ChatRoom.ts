@@ -1,5 +1,6 @@
-import { Room } from "colyseus";
+import { Room, FossilDeltaSerializer, serialize } from "colyseus";
 
+@serialize(FossilDeltaSerializer)
 export class ChatRoom extends Room<any> {
   maxClients = 4;
 

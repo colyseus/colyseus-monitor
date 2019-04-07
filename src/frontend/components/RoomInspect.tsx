@@ -65,7 +65,7 @@ export class RoomInspect extends React.Component {
         const roomId = (this.props as any).match.params.roomId;
 
         fetchRoomData(roomId).
-            then((response) => this.setState(response.body)).
+            then((response) => this.setState(response.body[1])).
             catch((err) => console.error(err));
 
         // re-set fetch interval

@@ -1,7 +1,6 @@
-import * as http from "http";
-import * as express from "express";
-import * as cors from "cors";
-import * as path from "path";
+import http from "http";
+import express from "express";
+import cors from "cors";
 
 import { Server, RedisPresence } from "colyseus";
 import { ChatRoom } from "./ChatRoom";

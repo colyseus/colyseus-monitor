@@ -1,5 +1,5 @@
 import { Server } from "colyseus";
-import * as express from "express";
+import express from "express";
 
 const UNAVAILABLE_ROOM_ERROR = "@colyseus/monitor: room $roomId is not available anymore.";
 

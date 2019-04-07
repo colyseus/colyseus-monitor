@@ -6,6 +6,8 @@
         "target": "es6",
         "declaration": false,
         "noImplicitAny": false,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
         "sourceMap": false,
         "jsx": "react"
     },
