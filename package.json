@@ -1,6 +1,6 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.11.0-alpha.8",
+  "version": "0.11.0-alpha.9",
   "description": "Web Monitoring Panel for Colyseus",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gamestdio/colyseus-monitor.git"
+    "url": "git+https://github.com/colyseus/colyseus-monitor.git"
   },
   "keywords": [
     "colyseus",
@@ -25,9 +25,9 @@
   "author": "Endel Dreyer",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gamestdio/colyseus-monitor/issues"
+    "url": "https://github.com/colyseus/colyseus-monitor/issues"
   },
-  "homepage": "https://github.com/gamestdio/colyseus-monitor#readme",
+  "homepage": "https://github.com/colyseus/colyseus-monitor#readme",
   "devDependencies": {
     "@types/express": "^4.11.0",
     "@types/material-ui": "^0.21.1",

@@ -3,12 +3,21 @@
 //
 import { Room, Client } from "colyseus";
 
+(<any>Room.prototype).getAvailableData = function () {
+    return {
+        clients: this.clients.length,
+        maxClients: this.maxClients,
+        metadata: this.metadata,
+        roomId: this.roomId,
+    };
+};
+
 (<any>Room.prototype).getRoomListData = async function () {
     const fullState = this._serializer.getFullState({});
     const stateSize = fullState.byteLength || fullState.length || 0;
     const elapsedTime = this.clock.elapsedTime;
     const locked = this.locked;
-    const data = await this.getAvailableData();
+    const data = this.getAvailableData();
 
     return { ...data, locked, elapsedTime, stateSize };
 };
@@ -19,7 +28,7 @@ import { Room, Client } from "colyseus";
     const fullState = this._serializer.getFullState({});
     const stateSize = fullState.byteLength || fullState.length || 0;
 
-    const data = await this.getAvailableData();
+    const data = this.getAvailableData();
     const clients = this.clients.map((client: Client) => (
         { sessionId: client.sessionId }
     ));
