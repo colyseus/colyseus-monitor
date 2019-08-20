@@ -5,45 +5,51 @@ const UNAVAILABLE_ROOM_ERROR = "@colyseus/monitor: room $roomId is not available
 
 export function getAPI (server: Server) {
     const api = express.Router();
-    const handlers = Object.keys(server.matchMaker.handlers);
 
-    api.get("/", (req: express.Request, res: express.Response) => {
-        const result: any = {};
+    api.get("/", async (req: express.Request, res: express.Response) => {
+        try {
+            const rooms: any[] = await (server.matchMaker as any).driver.find({});
 
-        Promise.all(
-            handlers.map((handler) => {
-                return server.matchMaker.
-                    getAllRooms(handler, 'getRoomListData').
-                    then((rooms: any[]) => {
-                        result[handler] = rooms;
-                    }).
-                    catch((err) => console.error(err));
-            })
-        ).then(() => res.json(result));
+            res.json(rooms.map(room => {
+                const data = room.toJSON();
+                data.elapsedTime = Date.now() - new Date(room.createdAt).getTime();
+                return data;
+            }));
+        } catch (e) {
+            const message = e.message;
+            console.error(message);
+            res.status(500);
+            res.json({ message });
+        }
     });
 
-    api.get("/room", (req: express.Request, res: express.Response) => {
+    api.get("/room", async (req: express.Request, res: express.Response) => {
         const roomId = req.query.roomId;
-
-        server.matchMaker.
-            remoteRoomCall(roomId, "getInspectData").
-            then((data: any) => res.json(data)).
-            catch((_) => {
-                console.error(UNAVAILABLE_ROOM_ERROR.replace("$roomId", roomId));
-            });
+        try {
+            const [_, inspectData] = await server.matchMaker.remoteRoomCall(roomId, "getInspectData");
+            res.json(inspectData);
+        } catch (e) {
+            const message = UNAVAILABLE_ROOM_ERROR.replace("$roomId", roomId);
+            console.error(message);
+            res.status(500);
+            res.json({ message });
+        }
     });
 
-    api.get("/room/call", (req: express.Request, res: express.Response) => {
+    api.get("/room/call", async (req: express.Request, res: express.Response) => {
         const roomId = req.query.roomId;
         const method = req.query.method;
         const args = JSON.parse(req.query.args);
 
-        server.matchMaker.
-            remoteRoomCall(roomId, method, args).
-            then((data: any) => res.json(data)).
-            catch((_) => {
-                console.error(UNAVAILABLE_ROOM_ERROR.replace("$roomId", roomId));
-            });
+        try {
+            const [_, data] = await server.matchMaker.remoteRoomCall(roomId, method, args);
+            res.json(data);
+        } catch (e) {
+            const message = UNAVAILABLE_ROOM_ERROR.replace("$roomId", roomId);
+            console.error(message);
+            res.status(500);
+            res.json({ message });
+        }
     });
 
     return api;

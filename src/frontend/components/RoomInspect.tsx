@@ -65,7 +65,7 @@ export class RoomInspect extends React.Component {
         const roomId = (this.props as any).match.params.roomId;
 
         fetchRoomData(roomId).
-            then((response) => this.setState(response.body[1])).
+            then((response) => this.setState(response.body)).
             catch((err) => console.error(err));
 
         // re-set fetch interval
@@ -211,7 +211,6 @@ export class RoomInspect extends React.Component {
                         <Table>
                             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                                 <TableRow>
-                                    <TableHeaderColumn>id</TableHeaderColumn>
                                     <TableHeaderColumn>sessionId</TableHeaderColumn>
                                     <TableHeaderColumn>actions</TableHeaderColumn>
                                 </TableRow>
@@ -219,7 +218,6 @@ export class RoomInspect extends React.Component {
                             <TableBody displayRowCheckbox={false}>
                                 {this.state.clients.map((client, i) => (
                                     <TableRow key={client.sessionId}>
-                                        <TableRowColumn>{client.id}</TableRowColumn>
                                         <TableRowColumn>{client.sessionId}</TableRowColumn>
                                         <TableRowColumn>
                                             <FlatButton

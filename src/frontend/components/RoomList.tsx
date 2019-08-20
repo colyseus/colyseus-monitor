@@ -57,18 +57,7 @@ export class RoomList extends React.Component {
   fetchRoomList () {
     fetchRoomList().
       then((response) => {
-        const data = response.body;
-        const rooms = [];
-
-        for (let handlerName in data) {
-          for (let i = 0; i < data[handlerName].length; i++) {
-            let room = data[handlerName][i];
-            room.handler = handlerName;
-
-            rooms.push(room);
-          }
-        }
-
+        const rooms = response.body;
         this.setState({ rooms });
       }).
       catch((err) => console.error(err));
@@ -153,7 +142,7 @@ export class RoomList extends React.Component {
                 <TableRowColumn style={defaultColumnWidth}>{room.handler}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{room.clients}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{room.maxClients}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{room.locked.toString()}</TableRowColumn>
+                <TableRowColumn style={defaultColumnWidth}>{(room.locked || false).toString()}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{ this.millisecondsToStr(room.elapsedTime) }</TableRowColumn>
                 <TableRowColumn style={largeColumnWidth}>
                   <FlatButton
