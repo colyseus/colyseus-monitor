@@ -127,7 +127,7 @@ export class RoomList extends React.Component {
           <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
             <TableRow>
               <TableHeaderColumn style={defaultColumnWidth}>roomId</TableHeaderColumn>
-              <TableHeaderColumn style={defaultColumnWidth}>handler</TableHeaderColumn>
+              <TableHeaderColumn style={defaultColumnWidth}>roomName</TableHeaderColumn>
               <TableHeaderColumn style={defaultColumnWidth}>clients</TableHeaderColumn>
               <TableHeaderColumn style={defaultColumnWidth}>maxClients</TableHeaderColumn>
               <TableHeaderColumn style={defaultColumnWidth}>locked</TableHeaderColumn>
@@ -139,7 +139,7 @@ export class RoomList extends React.Component {
             {this.state.rooms.map((room, i) => (
               <TableRow key={room.roomId}>
                 <TableRowColumn style={defaultColumnWidth}>{room.roomId}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{room.handler}</TableRowColumn>
+                <TableRowColumn style={defaultColumnWidth}>{room.roomName}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{room.clients}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{room.maxClients}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{(room.locked || false).toString()}</TableRowColumn>

@@ -9,6 +9,7 @@ import { Room, Client } from "colyseus";
         maxClients: this.maxClients,
         metadata: this.metadata,
         roomId: this.roomId,
+        roomName: this.roomName,
     };
 };
 
