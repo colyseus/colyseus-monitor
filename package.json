@@ -1,13 +1,13 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.11.1",
+  "version": "0.11.5",
   "description": "Web Monitoring Panel for Colyseus",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "start": "ts-node example/Server",
     "build": "webpack --env.production",
-    "prepublish": "npm run build && tsc",
+    "prepublish": "tsc && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -61,6 +61,6 @@
     "express": "^4.16.3"
   },
   "peerDependencies": {
-    "colyseus": "^0.10.4"
+    "colyseus": "^0.11.0"
   }
 }

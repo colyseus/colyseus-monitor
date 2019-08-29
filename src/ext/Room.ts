@@ -3,19 +3,24 @@
 //
 import { Room, Client } from "colyseus";
 
+function getStateSize(room) {
+    // TODO: `Serializer<T>` should provide a method for this (e.g. `serializer.hasState()`)
+    const hasState = (room._serializer.state || room._serializer.previousState);
+    const fullState = hasState && room._serializer.getFullState({});
+    return fullState && (fullState.byteLength || fullState.length) || 0;
+}
+
 (<any>Room.prototype).getAvailableData = function () {
     return {
         clients: this.clients.length,
         maxClients: this.maxClients,
         metadata: this.metadata,
         roomId: this.roomId,
-        roomName: this.roomName,
     };
 };
 
 (<any>Room.prototype).getRoomListData = async function () {
-    const fullState = this._serializer.getFullState({});
-    const stateSize = fullState.byteLength || fullState.length || 0;
+    const stateSize = getStateSize(this);
     const elapsedTime = this.clock.elapsedTime;
     const locked = this.locked;
     const data = this.getAvailableData();
@@ -25,9 +30,7 @@ import { Room, Client } from "colyseus";
 
 (<any>Room.prototype).getInspectData = async function () {
     const state = this.state;
-
-    const fullState = this._serializer.getFullState({});
-    const stateSize = fullState.byteLength || fullState.length || 0;
+    const stateSize = getStateSize(this);
 
     const data = this.getAvailableData();
     const clients = this.clients.map((client: Client) => (
