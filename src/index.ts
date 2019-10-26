@@ -6,9 +6,13 @@ import './ext/Room';
 
 const frontendDirectory = path.resolve(__dirname, "..", "lib", "static");
 
-export function monitor (server: Server): express.Router {
+/**
+ * TODO: expose the `router` instead on next major version.
+ * The `server` is not necessary anymore since colyseus@0.11.19
+ */
+export function monitor (server?: Server): express.Router {
     const router = express.Router();
     router.use('/', express.static(frontendDirectory));
-    router.use('/api', getAPI(server));
+    router.use('/api', getAPI());
     return router;
 }
