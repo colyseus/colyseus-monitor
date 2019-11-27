@@ -8,10 +8,15 @@ export function getAPI () {
 
     api.get("/", async (req: express.Request, res: express.Response) => {
         try {
-            const rooms: any[] = await matchMaker.driver.find({});
+            const rooms: any[] = await matchMaker.query({});
 
             res.json(rooms.map(room => {
                 const data = room.toJSON();
+
+                // additional data
+                data.locked = room.locked || false;
+                data.private = room.private;
+
                 data.elapsedTime = Date.now() - new Date(room.createdAt).getTime();
                 return data;
             }));

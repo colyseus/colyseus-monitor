@@ -142,7 +142,7 @@ export class RoomList extends React.Component {
                 <TableRowColumn style={defaultColumnWidth}>{room.name}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{room.clients}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{room.maxClients}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{(room.locked || false).toString()}</TableRowColumn>
+                <TableRowColumn style={defaultColumnWidth}>{(room.locked).toString()}</TableRowColumn>
                 <TableRowColumn style={defaultColumnWidth}>{ this.millisecondsToStr(room.elapsedTime) }</TableRowColumn>
                 <TableRowColumn style={largeColumnWidth}>
                   <FlatButton
