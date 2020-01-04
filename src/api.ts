@@ -1,5 +1,6 @@
 import { matchMaker } from "colyseus";
 import express from "express";
+import osUtils from "node-os-utils";
 
 const UNAVAILABLE_ROOM_ERROR = "@colyseus/monitor: room $roomId is not available anymore.";
 
@@ -10,16 +11,26 @@ export function getAPI () {
         try {
             const rooms: any[] = await matchMaker.query({});
 
-            res.json(rooms.map(room => {
-                const data = room.toJSON();
+            let connections: number = 0;
 
-                // additional data
-                data.locked = room.locked || false;
-                data.private = room.private;
+            res.json({
+                rooms: rooms.map(room => {
+                    const data = room.toJSON();
 
-                data.elapsedTime = Date.now() - new Date(room.createdAt).getTime();
-                return data;
-            }));
+                    connections += room.clients;
+
+                    // additional data
+                    data.locked = room.locked || false;
+                    data.private = room.private;
+
+                    data.elapsedTime = Date.now() - new Date(room.createdAt).getTime();
+                    return data;
+                }),
+
+                connections,
+                cpu: await osUtils.cpu.usage(),
+                memory: await osUtils.mem.used()
+            });
         } catch (e) {
             const message = e.message;
             console.error(message);

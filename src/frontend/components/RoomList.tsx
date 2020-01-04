@@ -21,15 +21,11 @@ import {
 } from 'material-ui/Card';
 
 import FlatButton from 'material-ui/FlatButton';
-
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Chip from 'material-ui/Chip';
+import { blue300 } from 'material-ui/styles/colors';
 
 import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import OpenInBrowserIcon from 'material-ui/svg-icons/action/open-in-browser';
-import SendIcon from 'material-ui/svg-icons/content/send';
-
-import { styles } from "../styles";
 
 const buttonStyle = { marginRight: 12 };
 
@@ -41,7 +37,10 @@ const UPDATE_ROOM_LIST_INTERVAL = 5000;
 export class RoomList extends React.Component {
   state = {
     selected: [1],
-    rooms: []
+    rooms: [],
+    connections: 0,
+    cpu: 0,
+    memory: { totalMemMb: 0, usedMemMb: 0 },
   };
 
   updateRoomListInterval: number;
@@ -56,10 +55,7 @@ export class RoomList extends React.Component {
 
   fetchRoomList () {
     fetchRoomList().
-      then((response) => {
-        const rooms = response.body;
-        this.setState({ rooms });
-      }).
+      then((response) => this.setState(response.body)).
       catch((err) => console.error(err));
 
     clearInterval(this.updateRoomListInterval);
@@ -119,53 +115,88 @@ export class RoomList extends React.Component {
     return ((size / Math.pow(1024, i)).toFixed(2) as any) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
   }
 
-
   render() {
     return (
-      <Card>
-        <Table>
-          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-            <TableRow>
-              <TableHeaderColumn style={defaultColumnWidth}>roomId</TableHeaderColumn>
-              <TableHeaderColumn style={defaultColumnWidth}>name</TableHeaderColumn>
-              <TableHeaderColumn style={defaultColumnWidth}>clients</TableHeaderColumn>
-              <TableHeaderColumn style={defaultColumnWidth}>maxClients</TableHeaderColumn>
-              <TableHeaderColumn style={defaultColumnWidth}>locked</TableHeaderColumn>
-              <TableHeaderColumn style={defaultColumnWidth}>elapsedTime</TableHeaderColumn>
-              <TableHeaderColumn style={largeColumnWidth}>actions</TableHeaderColumn>
-            </TableRow>
-          </TableHeader>
-          <TableBody displayRowCheckbox={false}>
-            {this.state.rooms.map((room, i) => {debugger;return (
-              <TableRow key={room.roomId}>
-                <TableRowColumn style={defaultColumnWidth}>{room.roomId}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{room.name}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{room.clients}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{room.maxClients}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{(room.locked).toString()}</TableRowColumn>
-                <TableRowColumn style={defaultColumnWidth}>{ this.millisecondsToStr(room.elapsedTime) }</TableRowColumn>
-                <TableRowColumn style={largeColumnWidth}>
-                  <FlatButton
-                    label="Inspect"
-                    icon={<OpenInBrowserIcon />}
-                    onClick={this.inspectRoom.bind(this, room.roomId)}
-                    style={buttonStyle}
-                  />
+      <div>
+        <Card>
+            <Table>
+                <TableBody displayRowCheckbox={false}>
+                    <TableRow>
+                        <TableRowColumn>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                Connections
+                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
+                                    {this.state.connections}
+                                </Chip>
+                            </div>
+                        </TableRowColumn>
+                        <TableRowColumn>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                CPU Usage
+                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
+                                    {this.state.cpu} %
+                                </Chip>
+                            </div>
+                        </TableRowColumn>
+                        <TableRowColumn>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                Memory
+                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
+                                    {this.state.memory.usedMemMb} MB
+                                </Chip>
+                            </div>
+                        </TableRowColumn>
+                    </TableRow>
+                </TableBody>
+            </Table>
 
-                  <FlatButton
-                    label="Dispose"
-                    secondary={true}
-                    icon={<DeleteForeverIcon />}
-                    style={buttonStyle}
-                    onClick={this.disposeRoom.bind(this, room.roomId)}
-                  />
-                </TableRowColumn>
-              </TableRow>
-            )})}
-          </TableBody>
 
-        </Table>
-      </Card>
+        </Card>
+        <Card>
+            <Table>
+            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+                <TableRow>
+                <TableHeaderColumn style={defaultColumnWidth}>roomId</TableHeaderColumn>
+                <TableHeaderColumn style={defaultColumnWidth}>name</TableHeaderColumn>
+                <TableHeaderColumn style={defaultColumnWidth}>clients</TableHeaderColumn>
+                <TableHeaderColumn style={defaultColumnWidth}>maxClients</TableHeaderColumn>
+                <TableHeaderColumn style={defaultColumnWidth}>locked</TableHeaderColumn>
+                <TableHeaderColumn style={defaultColumnWidth}>elapsedTime</TableHeaderColumn>
+                <TableHeaderColumn style={largeColumnWidth}>actions</TableHeaderColumn>
+                </TableRow>
+            </TableHeader>
+            <TableBody displayRowCheckbox={false}>
+                {this.state.rooms.map((room, i) => {return (
+                <TableRow key={room.roomId}>
+                    <TableRowColumn style={defaultColumnWidth}>{room.roomId}</TableRowColumn>
+                    <TableRowColumn style={defaultColumnWidth}>{room.name}</TableRowColumn>
+                    <TableRowColumn style={defaultColumnWidth}>{room.clients}</TableRowColumn>
+                    <TableRowColumn style={defaultColumnWidth}>{room.maxClients}</TableRowColumn>
+                    <TableRowColumn style={defaultColumnWidth}>{(room.locked).toString()}</TableRowColumn>
+                    <TableRowColumn style={defaultColumnWidth}>{ this.millisecondsToStr(room.elapsedTime) }</TableRowColumn>
+                    <TableRowColumn style={largeColumnWidth}>
+                    <FlatButton
+                        label="Inspect"
+                        icon={<OpenInBrowserIcon />}
+                        onClick={this.inspectRoom.bind(this, room.roomId)}
+                        style={buttonStyle}
+                    />
+
+                    <FlatButton
+                        label="Dispose"
+                        secondary={true}
+                        icon={<DeleteForeverIcon />}
+                        style={buttonStyle}
+                        onClick={this.disposeRoom.bind(this, room.roomId)}
+                    />
+                    </TableRowColumn>
+                </TableRow>
+                )})}
+            </TableBody>
+
+            </Table>
+        </Card>
+      </div>
     );
   }
 
