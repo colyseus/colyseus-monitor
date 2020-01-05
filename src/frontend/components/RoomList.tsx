@@ -132,6 +132,14 @@ export class RoomList extends React.Component {
                         </TableRowColumn>
                         <TableRowColumn>
                             <div style={{display: 'flex', alignItems: 'center'}}>
+                                Rooms
+                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
+                                    {this.state.rooms.length}
+                                </Chip>
+                            </div>
+                        </TableRowColumn>
+                        <TableRowColumn>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
                                 CPU Usage
                                 <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
                                     {this.state.cpu} %
