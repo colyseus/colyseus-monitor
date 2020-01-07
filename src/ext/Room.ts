@@ -6,7 +6,7 @@ import { Room, Client } from "colyseus";
 function getStateSize(room) {
     // TODO: `Serializer<T>` should provide a method for this (e.g. `serializer.hasState()`)
     const hasState = (room._serializer.state || room._serializer.previousState);
-    const fullState = hasState && room._serializer.getFullState({});
+    const fullState = hasState && room._serializer.getFullState();
     return fullState && (fullState.byteLength || fullState.length) || 0;
 }
 
