@@ -45,7 +45,7 @@ function getStateSize(room) {
 (<any>Room.prototype)._forceClientDisconnect = async function (sessionId) {
     for (let i = 0; i < this.clients.length; i++) {
         if (this.clients[i].sessionId === sessionId) {
-            this.clients[i].close();
+            this.clients[i].terminate();
             break;
         }
     }
