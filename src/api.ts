@@ -36,6 +36,8 @@ export function getAPI (opts: Partial<MonitorOptions>) {
                     data.locked = room.locked || false;
                     data.private = room.private;
 
+                    data.maxClients = room.maxClients || Infinity;
+
                     data.elapsedTime = Date.now() - new Date(room.createdAt).getTime();
                     return data;
                 }),
