@@ -1,10 +1,22 @@
 import { matchMaker } from "colyseus";
+
 import express from "express";
 import osUtils from "node-os-utils";
 
+import { MonitorOptions } from ".";
+
 const UNAVAILABLE_ROOM_ERROR = "@colyseus/monitor: room $roomId is not available anymore.";
 
-export function getAPI () {
+const DEFAULT_COLUMNS = [
+    'roomId',
+    'name',
+    'clients',
+    'maxClients',
+    'locked',
+    'elapsedTime',
+];
+
+export function getAPI (opts: Partial<MonitorOptions>) {
     const api = express.Router();
 
     api.get("/", async (req: express.Request, res: express.Response) => {
@@ -14,6 +26,7 @@ export function getAPI () {
             let connections: number = 0;
 
             res.json({
+                columns: opts.columns || DEFAULT_COLUMNS,
                 rooms: rooms.map(room => {
                     const data = room.toJSON();
 

@@ -41,6 +41,7 @@ export class RoomList extends React.Component {
     connections: 0,
     cpu: 0,
     memory: { totalMemMb: 0, usedMemMb: 0 },
+    columns: [],
   };
 
   updateRoomListInterval: number;
@@ -53,14 +54,18 @@ export class RoomList extends React.Component {
     this.fetchRoomList();
   }
 
-  fetchRoomList () {
-    fetchRoomList().
-      then((response) => this.setState(response.body)).
-      catch((err) => console.error(err));
+  async fetchRoomList () {
+    try {
+      this.setState((await fetchRoomList()).body);
+
+    } catch (err) {
+      console.error(err)
+    }
 
     clearInterval(this.updateRoomListInterval);
 
-    this.updateRoomListInterval = window.setInterval(() => this.fetchRoomList(), UPDATE_ROOM_LIST_INTERVAL);
+    this.updateRoomListInterval = window.setInterval(() =>
+      this.fetchRoomList(), UPDATE_ROOM_LIST_INTERVAL);
   }
 
   handleRowSelection = (selectedRows) => {
@@ -74,9 +79,26 @@ export class RoomList extends React.Component {
     history.push('/room/' + roomId);
   }
 
-  disposeRoom(roomId) {
-    remoteRoomCall(roomId, "disconnect").
-      then(() => this.fetchRoomList());
+  async disposeRoom(roomId) {
+    await remoteRoomCall(roomId, "disconnect");
+    this.fetchRoomList();
+  }
+
+  getColumnHeader(column) {
+    return (typeof (column) === "string")
+      ? column
+      : column.metadata
+  }
+
+  getRoomColumn(room, column) {
+    if (typeof(column) === "string") {
+      return (column === "elapsedTime")
+        ? this.millisecondsToStr(room.elapsedTime)
+        : (room[column] || "").toString();
+
+    } else if (column.metadata) {
+      return (room.metadata && room.metadata[column.metadata]) || "";
+    }
   }
 
   millisecondsToStr(milliseconds) {
@@ -164,24 +186,18 @@ export class RoomList extends React.Component {
             <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
-                <TableHeaderColumn style={defaultColumnWidth}>roomId</TableHeaderColumn>
-                <TableHeaderColumn style={defaultColumnWidth}>name</TableHeaderColumn>
-                <TableHeaderColumn style={defaultColumnWidth}>clients</TableHeaderColumn>
-                <TableHeaderColumn style={defaultColumnWidth}>maxClients</TableHeaderColumn>
-                <TableHeaderColumn style={defaultColumnWidth}>locked</TableHeaderColumn>
-                <TableHeaderColumn style={defaultColumnWidth}>elapsedTime</TableHeaderColumn>
+                {this.state.columns.forEach(column => (
+                  <TableHeaderColumn style={defaultColumnWidth}>{this.getColumnHeader(column)}</TableHeaderColumn>
+                ))}
                 <TableHeaderColumn style={largeColumnWidth}>actions</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
                 {this.state.rooms.map((room, i) => {return (
                 <TableRow key={room.roomId}>
-                    <TableRowColumn style={defaultColumnWidth}>{room.roomId}</TableRowColumn>
-                    <TableRowColumn style={defaultColumnWidth}>{room.name}</TableRowColumn>
-                    <TableRowColumn style={defaultColumnWidth}>{room.clients}</TableRowColumn>
-                    <TableRowColumn style={defaultColumnWidth}>{room.maxClients}</TableRowColumn>
-                    <TableRowColumn style={defaultColumnWidth}>{(room.locked).toString()}</TableRowColumn>
-                    <TableRowColumn style={defaultColumnWidth}>{ this.millisecondsToStr(room.elapsedTime) }</TableRowColumn>
+                    {this.state.columns.forEach(column => (
+                      <TableRowColumn style={defaultColumnWidth}>{this.getRoomColumn(room, column)}</TableRowColumn>
+                    ))}
                     <TableRowColumn style={largeColumnWidth}>
                     <FlatButton
                         label="Inspect"

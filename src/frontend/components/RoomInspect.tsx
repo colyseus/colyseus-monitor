@@ -102,6 +102,9 @@ export class RoomInspect extends React.Component {
     }
 
     disconnectClient(sessionId: string) {
+        /**
+         * `room._forceClientDisconnect` has been added via ext/Room.ts
+         */
         this.roomCall('_forceClientDisconnect', sessionId).
             then(() => this.fetchRoomData());
     }
@@ -123,6 +126,9 @@ export class RoomInspect extends React.Component {
     }
 
     handleSend = () => {
+        /**
+         * `room._sendMessageToClient` has been added via ext/Room.ts
+         */
         let promise = (this.state.sendToClient)
             ? this.roomCall('_sendMessageToClient', this.state.sendToClient, this.state.sendData)
             : this.roomCall('broadcast', this.state.sendData);
