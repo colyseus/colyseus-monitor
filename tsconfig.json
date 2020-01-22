@@ -4,7 +4,7 @@
         "module": "commonjs",
         "lib": ["es6", "dom"],
         "target": "es6",
-        "declaration": false,
+        "declaration": true,
         "noImplicitAny": false,
         "esModuleInterop": true,
         "experimentalDecorators": true,
@@ -13,5 +13,8 @@
     },
     "include": [
       "src/**/*.ts"
+    ],
+    "exclude": [
+      "src/frontend/**"
     ]
 }

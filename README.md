@@ -23,8 +23,25 @@ const basicAuthMiddleware = basicAuth({
     challenge: true
 });
 
-app.use("/colyseus", basicAuthMiddleware, monitor(gameServer));
+app.use("/colyseus", basicAuthMiddleware, monitor());
 ```
+
+## Setting custom room listing columns
+
+```typescript
+app.use("/colyseus", basicAuthMiddleware, monitor({
+  columns: [
+    'roomId',
+    'name',
+    'clients',
+    { metadata: "spectators" }, // display 'spectators' from metadata
+    'locked',
+    'elapsedTime'
+  ]
+}));
+```
+
+If unspecified, the default room listing columns are: `['roomId', 'name', 'clients', 'maxClients', 'locked', 'elapsedTime']`.
 
 ## Development
 

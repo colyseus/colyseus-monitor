@@ -91,14 +91,31 @@ export class RoomList extends React.Component {
   }
 
   getRoomColumn(room, column) {
-    if (typeof(column) === "string") {
-      return (column === "elapsedTime")
-        ? this.millisecondsToStr(room.elapsedTime)
-        : (room[column] || "").toString();
+    let field = column;
+    let value: any;
+    let valueFromObject: any;
+
+    let postProcessValue: (_: any) => string;
+
+    if (typeof(field) === "string") {
+      if (field === "elapsedTime") {
+        postProcessValue = this.millisecondsToStr;
+      }
+
+      valueFromObject = room;
 
     } else if (column.metadata) {
-      return (room.metadata && room.metadata[column.metadata]) || "";
+      field = column.metadata;
+      valueFromObject = room.metadata;
     }
+
+    value = valueFromObject[field];
+
+    if (value === undefined) {
+      value = "";
+    }
+
+    return (postProcessValue) ? postProcessValue(value) : `${value}`;
   }
 
   millisecondsToStr(milliseconds) {
@@ -186,7 +203,7 @@ export class RoomList extends React.Component {
             <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
                 <TableRow>
-                {this.state.columns.forEach(column => (
+                {this.state.columns.map(column => (
                   <TableHeaderColumn style={defaultColumnWidth}>{this.getColumnHeader(column)}</TableHeaderColumn>
                 ))}
                 <TableHeaderColumn style={largeColumnWidth}>actions</TableHeaderColumn>
@@ -195,7 +212,7 @@ export class RoomList extends React.Component {
             <TableBody displayRowCheckbox={false}>
                 {this.state.rooms.map((room, i) => {return (
                 <TableRow key={room.roomId}>
-                    {this.state.columns.forEach(column => (
+                    {this.state.columns.map(column => (
                       <TableRowColumn style={defaultColumnWidth}>{this.getRoomColumn(room, column)}</TableRowColumn>
                     ))}
                     <TableRowColumn style={largeColumnWidth}>
