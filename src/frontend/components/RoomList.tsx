@@ -93,18 +93,14 @@ export class RoomList extends React.Component {
   getRoomColumn(room, column) {
     let field = column;
     let value: any;
-    let valueFromObject: any;
+    let valueFromObject: any = room;
 
     let postProcessValue: (_: any) => string;
 
-    if (typeof(field) === "string") {
-      if (field === "elapsedTime") {
-        postProcessValue = this.millisecondsToStr;
-      }
+    if (field === "elapsedTime") {
+      postProcessValue = this.millisecondsToStr;
 
-      valueFromObject = room;
-
-    } else if (column.metadata) {
+    } else if (column.metadata && room.metadata) {
       field = column.metadata;
       valueFromObject = room.metadata;
     }
