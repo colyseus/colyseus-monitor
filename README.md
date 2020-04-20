@@ -54,6 +54,10 @@ npm start
 
 Access the UI on [http://localhost:2567/colyseus](http://localhost:2567/colyseus).
 
+## Environment Variables
+
+* `GAME_SERVER_URL` (default: current URL) - the URL for colyseus monitor to monitor (example: `server.game.com`).
+
 ## License
 
 MIT
