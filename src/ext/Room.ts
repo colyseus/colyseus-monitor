@@ -51,10 +51,10 @@ function getStateSize(room) {
     }
 };
 
-(<any>Room.prototype)._sendMessageToClient = async function (sessionId, data) {
+(<any>Room.prototype)._sendMessageToClient = async function (sessionId, type, data) {
     for (let i = 0; i < this.clients.length; i++) {
         if (this.clients[i].sessionId === sessionId) {
-            this.send(this.clients[i], data);
+            this.clients[i].send(type, data);
             break;
         }
     }

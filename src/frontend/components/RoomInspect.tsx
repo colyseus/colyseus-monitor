@@ -38,6 +38,7 @@ const buttonStyle = { marginRight: 12 };
 
 // fetch room data every 5 seconds.
 const FETCH_DATA_INTERVAL = 5000;
+const SEND_TYPE_CACHE = '$$colyseus$type';
 const SEND_DATA_CACHE = '$$colyseus$data';
 
 export class RoomInspect extends React.Component {
@@ -52,6 +53,7 @@ export class RoomInspect extends React.Component {
         sendDialogTitle: "",
         sendDialogOpen: false,
         sendToClient: undefined,
+        sendType: localStorage.getItem(SEND_TYPE_CACHE) || "message_type",
         sendData: JSON.parse(localStorage.getItem(SEND_DATA_CACHE) || "{}")
     };
 
@@ -116,8 +118,15 @@ export class RoomInspect extends React.Component {
             });
     }
 
+    updateSendType = (e) => {
+        const sendType = e.target.value;
+        localStorage.setItem(SEND_TYPE_CACHE, sendType);
+	this.setState({ sendType })
+    }
+
     updateSendData = (changes) => {
         localStorage.setItem(SEND_DATA_CACHE, JSON.stringify(changes));
+        // this.setState({ sendData: changes });
         this.state.sendData = changes;
     }
 
@@ -130,8 +139,8 @@ export class RoomInspect extends React.Component {
          * `room._sendMessageToClient` has been added via ext/Room.ts
          */
         let promise = (this.state.sendToClient)
-            ? this.roomCall('_sendMessageToClient', this.state.sendToClient, this.state.sendData)
-            : this.roomCall('broadcast', this.state.sendData);
+            ? this.roomCall('_sendMessageToClient', this.state.sendToClient, this.state.sendType, this.state.sendData)
+            : this.roomCall('broadcast', this.state.sendType, this.state.sendData);
 
         promise.then(() => this.handleCloseSend());
     }
@@ -268,6 +277,10 @@ export class RoomInspect extends React.Component {
                     open={this.state.sendDialogOpen}
                     onRequestClose={this.handleCloseSend}
                 >
+                    <h2>Message type:</h2>
+                    <input type="text" value={this.state.sendType} onChange={this.updateSendType} />
+
+                    <h2>Message payload</h2>
                     <JsonEditor value={this.state.sendData} propagateChanges={this.updateSendData} />
                 </Dialog>
 
