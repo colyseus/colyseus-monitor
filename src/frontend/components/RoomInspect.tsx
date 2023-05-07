@@ -146,8 +146,7 @@ export class RoomInspect extends React.Component {
     }
 
     goBack() {
-        const history = (this.props as any).history;
-        history.goBack();
+        window.history.back()
     }
 
     render() {
