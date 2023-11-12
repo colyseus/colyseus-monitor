@@ -112,7 +112,7 @@ export class RoomInspect extends React.Component {
     }
 
     disposeRoom () {
-        this.roomCall('disconnect', this.state.roomId).
+        this.roomCall('disconnect').
             then(() => {
                 (this.props as any).history.push('/');
             });
