@@ -1,31 +1,22 @@
 import * as React from "react";
-import * as http from "superagent";
 
 import { fetchRoomList, remoteRoomCall } from "../services";
 
+import { Card, Button, Typography} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
 import {
+  Fab,
   Table,
   TableBody,
-  TableHeader,
-  TableHeaderColumn,
+  TableCell,
+  TableContainer,
+  TableHead,
   TableRow,
-  TableRowColumn,
-  TableFooter,
-} from "material-ui/Table";
-
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardText
-} from 'material-ui/Card';
-
-import FlatButton from 'material-ui/FlatButton';
-import Chip from 'material-ui/Chip';
-import { blue300 } from 'material-ui/styles/colors';
-
-import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
-import OpenInBrowserIcon from 'material-ui/svg-icons/action/open-in-browser';
+  Paper
+} from '@mui/material';
 
 const buttonStyle = { marginRight: 12 };
 
@@ -150,88 +141,128 @@ export class RoomList extends React.Component {
     return ((size / Math.pow(1024, i)).toFixed(2) as any) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
   }
 
+  getColumnsNames(columns: any): Array<any> {
+    const data = columns.map(column => {
+      const value = this.getColumnHeader(column);
+      return { id: value, field: value, headerName: value, flex: 1 }
+    });
+    data.push({
+      id: "Inspect",
+      field: "Inspect",
+      headerName: "Inspect",
+      flex: 1,
+      renderCell: (param) => {
+        return <div style={{ cursor: "pointer" }} onClick={() => {
+          this.inspectRoom(param.value);
+        }}>
+          <Button variant="contained" startIcon={<OpenInBrowserIcon />}>
+            <Typography
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
+            >
+              INSPECT
+            </Typography>
+          </Button>
+        </div>
+      }
+    });
+    data.push({
+      id: "Dispose",
+      field: "Dispose",
+      headerName: "Dispose",
+      flex: 1,
+      renderCell: (param) => {
+        return <div style={{ cursor: "pointer" }} onClick={() => {
+          this.disposeRoom(param.value);
+        }}>
+          <Button variant="contained" color="error" startIcon={<DeleteForeverIcon />}>
+            <Typography
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
+            >
+              DISPOSE
+            </Typography>
+          </Button>
+        </div>
+      }
+    });
+    return data;
+  }
+
+  getRowsData(rooms: any): Array<any> {
+    const total_data = rooms.map(room => {
+      const data = { id: room.roomId };
+      for (const column of this.state.columns) {
+        const value = this.getRoomColumn(room, column);
+        data[column] = value;
+      }
+      data["Inspect"] = room.roomId;
+      data["Dispose"] = room.roomId;
+      return data
+    });
+    return total_data
+  }
+
+  generateRoomListDataGrid(): JSX.Element {
+    const columns = this.getColumnsNames(this.state.columns);
+    const rows = this.getRowsData(this.state.rooms);
+
+    return <DataGrid
+      columns={columns}
+      rows={rows}
+      autoHeight
+      sx={{ overflow: "hidden" }}
+      slots={{
+        noRowsOverlay: () => <></>,
+      }}
+      disableRowSelectionOnClick
+      hideFooter
+      hideFooterPagination
+      hideFooterSelectedRowCount
+    />
+  }
+
   render() {
     return (
       <div>
         <Card>
-            <Table>
-                <TableBody displayRowCheckbox={false}>
-                    <TableRow>
-                        <TableRowColumn>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                Connections
-                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
-                                    {this.state.connections}
-                                </Chip>
-                            </div>
-                        </TableRowColumn>
-                        <TableRowColumn>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                Rooms
-                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
-                                    {this.state.rooms.length}
-                                </Chip>
-                            </div>
-                        </TableRowColumn>
-                        <TableRowColumn>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                CPU Usage
-                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
-                                    {this.state.cpu} %
-                                </Chip>
-                            </div>
-                        </TableRowColumn>
-                        <TableRowColumn>
-                            <div style={{display: 'flex', alignItems: 'center'}}>
-                                Memory
-                                <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
-                                    {this.state.memory.usedMemMb} MB
-                                </Chip>
-                            </div>
-                        </TableRowColumn>
-                    </TableRow>
-                </TableBody>
-            </Table>
-
-
-        </Card>
-        <Card>
-            <Table>
-            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+          <TableContainer component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
                 <TableRow>
-                {this.state.columns.map(column => (
-                  <TableHeaderColumn style={defaultColumnWidth}>{this.getColumnHeader(column)}</TableHeaderColumn>
-                ))}
-                <TableHeaderColumn style={largeColumnWidth}>actions</TableHeaderColumn>
+                  <TableCell align={"center"}>
+                    Connections
+                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
+                      {this.state.connections}
+                    </Fab>
+                  </TableCell>
+                  <TableCell align={"center"}>
+                    Rooms
+                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
+                      {this.state.rooms.length}
+                    </Fab>
+                  </TableCell>
+                  <TableCell align={"center"}>
+                    CPU Usage
+                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
+                      {this.state.cpu} %
+                    </Fab>
+                  </TableCell>
+                  <TableCell align={"center"}>
+                    Memory
+                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
+                      {this.state.memory.usedMemMb} MB
+                    </Fab>
+                  </TableCell>
                 </TableRow>
-            </TableHeader>
-            <TableBody displayRowCheckbox={false}>
-                {this.state.rooms.map((room, i) => {return (
-                <TableRow key={room.roomId}>
-                    {this.state.columns.map(column => (
-                      <TableRowColumn style={defaultColumnWidth}>{this.getRoomColumn(room, column)}</TableRowColumn>
-                    ))}
-                    <TableRowColumn style={largeColumnWidth}>
-                    <FlatButton
-                        label="Inspect"
-                        icon={<OpenInBrowserIcon />}
-                        onClick={this.inspectRoom.bind(this, room.roomId)}
-                        style={buttonStyle}
-                    />
-
-                    <FlatButton
-                        label="Dispose"
-                        secondary={true}
-                        icon={<DeleteForeverIcon />}
-                        style={buttonStyle}
-                        onClick={this.disposeRoom.bind(this, room.roomId)}
-                    />
-                    </TableRowColumn>
-                </TableRow>
-                )})}
-            </TableBody>
-
+              </TableHead>
             </Table>
+          </TableContainer>
+        </Card>
+        <Card style={{ marginTop: "2px" }}>
+          {this.generateRoomListDataGrid()}
         </Card>
       </div>
     );

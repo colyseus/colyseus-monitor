@@ -1,38 +1,46 @@
 import * as React from "react";
-import * as http from "superagent";
 import ReactJson from "react-json-view";
 import { JsonEditor } from "react-json-edit";
 
 import { remoteRoomCall, fetchRoomData } from "../services";
 
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-  TableFooter,
-} from "material-ui/Table";
+    AppBar,
+    IconButton,
+    Toolbar,
+    Typography,
+    Fab,
+    Table,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Tab,
+    Box
+} from '@mui/material';
 
-import AppBar from "material-ui/AppBar";
-import Chip from 'material-ui/Chip';
+import { DataGrid } from '@mui/x-data-grid';
 
-import { Tabs, Tab } from 'material-ui/Tabs';
+import { useMediaQuery } from '@mui/material';
 
-import Dialog from 'material-ui/Dialog';
+import {
+    TabContext,
+    TabList,
+    TabPanel
+} from '@mui/lab';
 
-import RemoveIcon from 'material-ui/svg-icons/content/remove-circle';
-import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
-import SendIcon from 'material-ui/svg-icons/content/send';
-import LockIcon from 'material-ui/svg-icons/action/lock';
-import UnlockIcon from 'material-ui/svg-icons/action/lock-open';
-
-import ArrowBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
-
-import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
-import { blue300 } from 'material-ui/styles/colors';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import SendIcon from '@mui/icons-material/Send';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 
 const buttonStyle = { marginRight: 12 };
 
@@ -49,7 +57,7 @@ export class RoomInspect extends React.Component {
         maxClients: 0,
         stateSize: 0,
         locked: false,
-
+        currentTab: "1",
         sendDialogTitle: "",
         sendDialogOpen: false,
         sendToClient: undefined,
@@ -149,141 +157,180 @@ export class RoomInspect extends React.Component {
         window.history.back()
     }
 
+    handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+        this.setState({ currentTab: newValue });
+    };
+
     render() {
-        const actions = [
-            <FlatButton
-                label="Cancel"
-                primary={true}
-                onClick={this.handleCloseSend}
-            />,
-            <FlatButton
-                label="Send"
-                primary={true}
-                onClick={this.handleSend}
-                keyboardFocused={true}
-            />,
-        ];
+        const client_columns = [
+            { id: "sessionId", field: "sessionId", headerName: "sessionId", flex: 1 },
+            {
+                id: "actions",
+                field: "actions",
+                headerName: "actions",
+                flex: 1,
+                renderCell: (param) => {
+                    return <>
+                        <Button variant="text" startIcon={<SendIcon />} onClick={this.sendMessage.bind(this, param.id)}>
+                            <Typography
+                                noWrap
+                                component="div"
+                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
+                            >
+                                SEND
+                            </Typography>
+                        </Button>
+                        <Button variant="text" color="error" startIcon={<DoDisturbOnIcon />} onClick={this.disconnectClient.bind(this, param.id)}>
+                            <Typography
+                                noWrap
+                                component="div"
+                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
+                            >
+                                DISCONNECT
+                            </Typography>
+                        </Button>
+                    </>
+                }
+            }
+        ]
+        const client_rows = this.state.clients.map(client => {
+            return { id: client.sessionId, sessionId: client.sessionId, actions: client.sessionId };
+        });
 
         return (
             <div>
-                <AppBar
-                    iconElementLeft={
-                    <IconButton onClick={this.goBack.bind(this)}>
-                        <ArrowBackIcon />
-                    </IconButton>
-                    }
-                    title={'Room ' + this.state.roomId}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton aria-label="delete" onClick={this.goBack.bind(this)}>
+                            <ArrowBackIcon />
+                        </IconButton>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{ flexGrow: 1 }}
+                        >
+                            {'Room ' + this.state.roomId}
+                        </Typography>
+                    </Toolbar>
                 </AppBar>
+                <TableContainer component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align={"center"}>
+                                    {(this.state.locked) ? <LockIcon /> : <LockOpenIcon />}
+                                    {(this.state.locked) ? 'Locked' : 'Unlocked'}
+                                </TableCell>
 
-                <Table>
-                    <TableBody displayRowCheckbox={false}>
-                        <TableRow>
-                            <TableRowColumn>
-                                <div style={{display: 'flex', alignItems: 'center', verticalAlign: 'center'}}>
-                                    { (this.state.locked) ? <LockIcon /> : <UnlockIcon /> }
-                                    { (this.state.locked) ? 'Locked' : 'Unlocked' }
-                                </div>
-                            </TableRowColumn>
-                            <TableRowColumn>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                <TableCell align={"center"}>
                                     Clients
-                                    <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
-                                    {this.state.clients.length}{this.state.maxClients ? ' / ' + this.state.maxClients : ''}
-                                    </Chip>
-                                </div>
-                            </TableRowColumn>
-                            <TableRowColumn>
-                                <div style={{display: 'flex', alignItems: 'center'}}>
+                                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
+                                        {this.state.clients.length}{this.state.maxClients ? ' / ' + this.state.maxClients : ''}
+                                    </Fab>
+                                </TableCell>
+
+                                <TableCell align={"center"}>
                                     State Size
-                                    <Chip style={{marginLeft: '5px'}} backgroundColor={blue300}>
-                                    {this.state.stateSize} bytes
-                                    </Chip>
-                                </div>
-                            </TableRowColumn>
-                            <TableRowColumn>
-                                <FlatButton
-                                    label="Broadcast"
-                                    icon={<SendIcon />}
-                                    onClick={this.sendMessage.bind(this, undefined)}
-                                    style={buttonStyle}
-                                />
+                                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
+                                        {this.state.stateSize} bytes
+                                    </Fab>
+                                </TableCell>
 
-                                <FlatButton
-                                    label="Dispose room"
-                                    secondary={true}
-                                    icon={<DeleteForeverIcon />}
-                                    onClick={this.disposeRoom.bind(this)}
-                                    style={buttonStyle}
-                                />
-                            </TableRowColumn>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                                <TableCell align={"center"}>
+                                    <Button variant="text" startIcon={<SendIcon />} onClick={this.sendMessage.bind(this, undefined)}>
+                                        <Typography
+                                            noWrap
+                                            component="div"
+                                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
+                                        >
+                                            BROADCAST
+                                        </Typography>
+                                    </Button>
+                                </TableCell>
 
-                <Tabs>
-                    <Tab label="Clients">
-                        <Table>
-                            <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
-                                <TableRow>
-                                    <TableHeaderColumn>sessionId</TableHeaderColumn>
-                                    <TableHeaderColumn>actions</TableHeaderColumn>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody displayRowCheckbox={false}>
-                                {this.state.clients.map((client, i) => (
-                                    <TableRow key={client.sessionId}>
-                                        <TableRowColumn>{client.sessionId}</TableRowColumn>
-                                        <TableRowColumn>
-                                            <FlatButton
-                                                label="Send"
-                                                icon={<SendIcon />}
-                                                style={buttonStyle}
-                                                onClick={this.sendMessage.bind(this, client.sessionId)}
-                                            />
+                                <TableCell align={"center"}>
+                                    <Button variant="text" color="error" startIcon={<DeleteForeverIcon />} onClick={this.disposeRoom.bind(this)}>
+                                        <Typography
+                                            noWrap
+                                            component="div"
+                                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
+                                        >
+                                            DISPOSE ROOM
+                                        </Typography>
+                                    </Button>
+                                </TableCell>
 
-                                            <FlatButton
-                                                label="Disconnect"
-                                                secondary={true}
-                                                icon={<RemoveIcon />}
-                                                style={buttonStyle}
-                                                onClick={this.disconnectClient.bind(this, client.sessionId)}
-                                            />
-                                            {/* <FlatButton label="Broadcast" style={buttonStyle} /> */}
-                                        </TableRowColumn>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
+                            </TableRow>
+                        </TableHead>
+                    </Table>
+                </TableContainer>
 
-                            <TableFooter>
-                                <TableRow>
-                                    <TableHeaderColumn style={{ textAlign: "right" }} colSpan={3}>
-                                    </TableHeaderColumn>
-                                </TableRow>
-                            </TableFooter>
-
-                        </Table>
-                    </Tab>
-
-                    <Tab label="State">
-                        <ReactJson name={null} src={this.state.state} />
-                    </Tab>
-                </Tabs>
+                <TabContext value={this.state.currentTab}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={this.handleTabChange} aria-label="lab API tabs example" variant={"fullWidth"}>
+                            <Tab label="Clients" value="1" />
+                            <Tab label="State" value="2" />
+                        </TabList>
+                    </Box>
+                    <TabPanel value="1">
+                        <DataGrid
+                            columns={client_columns}
+                            rows={client_rows}
+                            sx={{ overflow: "hidden" }}
+                            disableRowSelectionOnClick
+                            hideFooter
+                            hideFooterPagination
+                            hideFooterSelectedRowCount
+                        />
+                    </TabPanel>
+                    <TabPanel value="2">
+                        <RoomStateJsonViewer state={this.state.state} />
+                    </TabPanel>
+                </TabContext>
 
                 <Dialog
-                    title={this.state.sendDialogTitle}
-                    actions={actions}
-                    modal={false}
                     open={this.state.sendDialogOpen}
-                    onRequestClose={this.handleCloseSend}
+                    onClose={this.handleCloseSend}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
                 >
-                    <h2>Message type:</h2>
-                    <input type="text" value={this.state.sendType} onChange={this.updateSendType} />
+                    <DialogTitle id="alert-dialog-title">
+                        {this.state.sendDialogTitle}
+                    </DialogTitle>
+                    <DialogContent>
+                        <h2>Message type:</h2>
+                        <input type="text" value={this.state.sendType} onChange={this.updateSendType} />
 
-                    <h2>Message payload</h2>
-                    <JsonEditor value={this.state.sendData} propagateChanges={this.updateSendData} />
+                        <h2>Message payload</h2>
+                        <JsonEditor value={this.state.sendData} propagateChanges={this.updateSendData} />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            variant="text"
+                            color="error"
+                            onClick={this.handleCloseSend}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="text"
+                            onClick={this.handleSend}
+                        >
+                            Send
+                        </Button>
+                    </DialogActions>
                 </Dialog>
-
             </div>
         );
     }
+}
+
+function RoomStateJsonViewer(params: { state: any }): JSX.Element {
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    return <ReactJson
+        name={null}
+        src={params.state}
+        theme={prefersDarkMode ? "monokai" : "rjv-default"}
+    />
 }
