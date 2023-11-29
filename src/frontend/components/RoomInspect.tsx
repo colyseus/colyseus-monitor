@@ -1,6 +1,8 @@
 import * as React from "react";
-import ReactJson from "react-json-view";
 import { JsonEditor } from "react-json-edit";
+
+import ReactJson from "react18-json-view";
+import 'react18-json-view/src/style.css'
 
 import { remoteRoomCall, fetchRoomData } from "../services";
 
@@ -9,7 +11,7 @@ import {
     IconButton,
     Toolbar,
     Typography,
-    Fab,
+    Chip,
     Table,
     TableCell,
     TableContainer,
@@ -27,8 +29,6 @@ import {
 
 import { DataGrid } from '@mui/x-data-grid';
 
-import { useMediaQuery } from '@mui/material';
-
 import {
     TabContext,
     TabList,
@@ -41,8 +41,6 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
-
-const buttonStyle = { marginRight: 12 };
 
 // fetch room data every 5 seconds.
 const FETCH_DATA_INTERVAL = 5000;
@@ -172,22 +170,10 @@ export class RoomInspect extends React.Component {
                 renderCell: (param) => {
                     return <>
                         <Button variant="text" startIcon={<SendIcon />} onClick={this.sendMessage.bind(this, param.id)}>
-                            <Typography
-                                noWrap
-                                component="div"
-                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
-                            >
-                                SEND
-                            </Typography>
+                            Send
                         </Button>
                         <Button variant="text" color="error" startIcon={<DoDisturbOnIcon />} onClick={this.disconnectClient.bind(this, param.id)}>
-                            <Typography
-                                noWrap
-                                component="div"
-                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
-                            >
-                                DISCONNECT
-                            </Typography>
+                            Disconnect
                         </Button>
                     </>
                 }
@@ -225,39 +211,23 @@ export class RoomInspect extends React.Component {
 
                                 <TableCell align={"center"}>
                                     Clients
-                                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
-                                        {this.state.clients.length}{this.state.maxClients ? ' / ' + this.state.maxClients : ''}
-                                    </Fab>
+                                    <Chip sx={{ marginLeft: "6px" }} size="small" color="primary" label={`${this.state.clients.length}${(this.state.maxClients ? ' / ' + this.state.maxClients : '')}`} />
                                 </TableCell>
 
                                 <TableCell align={"center"}>
                                     State Size
-                                    <Fab sx={{ marginLeft: "6px" }} variant="extended" size="small" color="primary" aria-label="add">
-                                        {this.state.stateSize} bytes
-                                    </Fab>
+                                    <Chip sx={{ marginLeft: "6px" }} size="small" color="primary" label={`${this.state.stateSize} bytes`} />
                                 </TableCell>
 
                                 <TableCell align={"center"}>
                                     <Button variant="text" startIcon={<SendIcon />} onClick={this.sendMessage.bind(this, undefined)}>
-                                        <Typography
-                                            noWrap
-                                            component="div"
-                                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
-                                        >
-                                            BROADCAST
-                                        </Typography>
+                                        Broadcast
                                     </Button>
                                 </TableCell>
 
                                 <TableCell align={"center"}>
                                     <Button variant="text" color="error" startIcon={<DeleteForeverIcon />} onClick={this.disposeRoom.bind(this)}>
-                                        <Typography
-                                            noWrap
-                                            component="div"
-                                            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'none', md: "block" } }}
-                                        >
-                                            DISPOSE ROOM
-                                        </Typography>
+                                        Dispose room
                                     </Button>
                                 </TableCell>
 
@@ -285,7 +255,7 @@ export class RoomInspect extends React.Component {
                         />
                     </TabPanel>
                     <TabPanel value="2">
-                        <RoomStateJsonViewer state={this.state.state} />
+                        <ReactJson src={this.state.state} theme={"default"} />
                     </TabPanel>
                 </TabContext>
 
@@ -326,11 +296,3 @@ export class RoomInspect extends React.Component {
     }
 }
 
-function RoomStateJsonViewer(params: { state: any }): JSX.Element {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    return <ReactJson
-        name={null}
-        src={params.state}
-        theme={prefersDarkMode ? "monokai" : "rjv-default"}
-    />
-}

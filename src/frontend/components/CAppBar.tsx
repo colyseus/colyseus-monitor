@@ -20,7 +20,7 @@ export class CAppBar extends React.Component {
                         component="div"
                         sx={{ flexGrow: 1 }}
                     >
-                        Colyseus
+                        Colyseus Monitor v{ process.env.npm_package_version }
                     </Typography>
                 </Toolbar>
             </AppBar>
