@@ -202,7 +202,7 @@ export class RoomList extends React.Component {
       const data = { id: room.roomId };
       for (const column of this.state.columns) {
         const value = this.getRoomColumn(room, column);
-        data[column] = value;
+        data[this.getColumnHeader(column)] = value;
       }
       data["Inspect"] = room.roomId;
       data["Dispose"] = room.roomId;
