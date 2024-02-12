@@ -1,13 +1,13 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.15.4",
+  "version": "0.15.5",
   "description": "Web Monitoring Panel for Colyseus",
   "input": "./src/index.ts",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
   "typings": "./build/index.d.ts",
   "scripts": {
-    "start": "ts-node example/Server",
+    "start": "ts-node example/Server.ts",
     "build": "tsc && NODE_OPTIONS=--openssl-legacy-provider webpack --env.production",
     "prepublishOnly": "tsc && npm run build"
   },
@@ -43,6 +43,7 @@
     "@types/react": "^18.2.38",
     "@types/react-router-dom": "^4.2.6",
     "@types/superagent": "^3.5.8",
+    "colyseus": "^0.15.15",
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
@@ -54,6 +55,7 @@
     "react18-json-view": "^0.2.6",
     "style-loader": "^0.20.3",
     "ts-loader": "^4.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "^4.9.5",
     "webpack": "^4.5.0",
     "webpack-cli": "^3.2.3",

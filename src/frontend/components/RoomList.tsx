@@ -227,9 +227,9 @@ export class RoomList extends React.Component {
         noRowsOverlay: () => <></>,
       }}
       disableRowSelectionOnClick
-      hideFooter
-      hideFooterPagination
-      hideFooterSelectedRowCount
+      // hideFooter
+      // hideFooterPagination
+      // hideFooterSelectedRowCount
     />
   }
 
