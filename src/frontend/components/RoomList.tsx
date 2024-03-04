@@ -1,9 +1,9 @@
 import * as React from "react";
-
+import type { MonitorOptions } from "../../";
 import { fetchRoomList, remoteRoomCall } from "../services";
 
 import { Card, Button } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, gridDateComparator, gridNumberComparator, gridStringOrNumberComparator } from '@mui/x-data-grid';
 import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -20,6 +20,35 @@ import {
 
 const UPDATE_ROOM_LIST_INTERVAL = 5000;
 const NO_ACTIVE_ROOMS_ROOM_ID = 'No active rooms.';
+
+/**
+ * Define default sort method by column name
+ */
+type ExtractStringNames<T> = T extends (infer U)[] ? U extends string ? U : never : never;
+const sortComparator: { [key in ExtractStringNames<MonitorOptions['columns']>]?: Function } = {
+  clients: gridNumberComparator,
+  maxClients: gridNumberComparator,
+  elapsedTime: gridDateComparator
+}
+
+const valueFormatter: { [key in ExtractStringNames<MonitorOptions['columns']>]?: Function } = {
+  elapsedTime: (params) => {
+    const milliseconds = Date.now() - params.value.getTime()
+    if (milliseconds < 0) { return ""; }
+    let temp = Math.floor(milliseconds / 1000);
+    const years = Math.floor(temp / 31536000);
+    if (years) { return years + 'y'; }
+    const days = Math.floor((temp %= 31536000) / 86400);
+    if (days) { return days + 'd'; }
+    const hours = Math.floor((temp %= 86400) / 3600);
+    if (hours) { return hours + 'h'; }
+    const minutes = Math.floor((temp %= 3600) / 60);
+    if (minutes) { return minutes + 'min'; }
+    const seconds = temp % 60;
+    if (seconds) { return seconds + 's'; }
+    return 'less than a second';
+  }
+}
 
 export class RoomList extends React.Component {
   state = {
@@ -82,10 +111,10 @@ export class RoomList extends React.Component {
     let value: any;
     let valueFromObject: any = room;
 
-    let postProcessValue: (_: any) => string;
+    let postProcessValue: any = undefined;
 
     if (field === "elapsedTime") {
-      postProcessValue = this.millisecondsToStr;
+      postProcessValue = (milliseconds) => new Date( Date.now() - milliseconds );
 
     } else if (column.metadata && room.metadata) {
       field = column.metadata;
@@ -101,53 +130,29 @@ export class RoomList extends React.Component {
     return (postProcessValue) ? postProcessValue(value) : `${value}`;
   }
 
-  millisecondsToStr(milliseconds) {
-    if (milliseconds < 0) {
-      return "";
-    }
-
-    let temp = Math.floor(milliseconds / 1000);
-
-    const years = Math.floor(temp / 31536000);
-    if (years) {
-      return years + 'y';
-    }
-
-    const days = Math.floor((temp %= 31536000) / 86400);
-    if (days) {
-      return days + 'd';
-    }
-
-    const hours = Math.floor((temp %= 86400) / 3600);
-    if (hours) {
-      return hours + 'h';
-    }
-
-    const minutes = Math.floor((temp %= 3600) / 60);
-    if (minutes) {
-      return minutes + 'min';
-    }
-
-    const seconds = temp % 60;
-    if (seconds) {
-      return seconds + 's';
-    }
-
-    return 'less than a second';
-  }
-
   bytesToStr(size: number) {
     const i = Math.floor(Math.log(size) / Math.log(1024));
     return ((size / Math.pow(1024, i)).toFixed(2) as any) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
   }
 
-  getColumnsNames(columns: any): Array<any> {
-    const data = columns.map(column => {
+  getColumnsNames(columns: any): Array<GridColDef> {
+    const data: GridColDef[] = columns.map(column => {
       const value = this.getColumnHeader(column);
-      return { id: value, field: value, headerName: value, flex: 1 }
+
+      return {
+        id: value,
+        field: value,
+        headerName: value,
+        flex: 1,
+        valueFormatter: valueFormatter[value],
+        sortComparator: sortComparator[value] || gridStringOrNumberComparator
+      } as GridColDef;
     });
+
+    //
+    // "Inspect" action column
+    //
     data.push({
-      id: "Inspect",
       field: "Inspect",
       headerName: "", // Inspect
       flex: 1,
@@ -170,8 +175,11 @@ export class RoomList extends React.Component {
           : null;
       }
     });
+
+    //
+    // "Dispose" action column
+    //
     data.push({
-      id: "Dispose",
       field: "Dispose",
       headerName: "", // Dispose
       flex: 1,
