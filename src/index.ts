@@ -15,6 +15,7 @@ export interface MonitorOptions {
         'locked' |
         'elapsedTime' |
         { metadata: string } |
+        'processId' |
         "publicAddress"
     >
 }
