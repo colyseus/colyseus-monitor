@@ -1,11 +1,15 @@
 //
 // Monkey-patch Colyseus' default behaviour
 //
-import { Room, Client } from "@colyseus/core";
+import { Room, Client, ClientPrivate } from "@colyseus/core";
 
 function getStateSize(room) {
     // TODO: `Serializer<T>` should provide a method for this (e.g. `serializer.hasState()`)
-    const hasState = (room._serializer.state || room._serializer.previousState);
+    const hasState = (
+      room._serializer.encoder || // schema v3
+      room._serializer.state || // schema v2
+      room._serializer.previousState // legacy-fossil-delta
+    );
     const fullState = hasState && room._serializer.getFullState();
     return fullState && (fullState.byteLength || fullState.length) || 0;
 }
@@ -31,11 +35,13 @@ function getStateSize(room) {
 (<any>Room.prototype).getInspectData = async function () {
     const state = this.state;
     const stateSize = getStateSize(this);
+    const roomElapsedTime = this.clock.elapsedTime;
 
     const data = this.getAvailableData();
-    const clients = this.clients.map((client: Client) => (
-        { sessionId: client.sessionId }
-    ));
+    const clients = this.clients.map((client: Client & ClientPrivate) => ({
+        sessionId: client.sessionId,
+        elapsedTime: client._joinedAt - roomElapsedTime
+    }));
     const locked = this.locked;
 
     return { ...data, locked, clients, state, stateSize };

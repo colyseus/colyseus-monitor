@@ -27,7 +27,7 @@ import {
     Box
 } from '@mui/material';
 
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, gridDateComparator, gridNumberComparator } from '@mui/x-data-grid';
 
 import {
     TabContext,
@@ -41,14 +41,31 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
+import { valueFormatter } from "../helpers/helpers";
 
 // fetch room data every 5 seconds.
 const FETCH_DATA_INTERVAL = 5000;
 const SEND_TYPE_CACHE = '$$colyseus$type';
 const SEND_DATA_CACHE = '$$colyseus$data';
 
-export class RoomInspect extends React.Component {
-    state = {
+interface Props {}
+interface State {
+  roomId?: string,
+  state: any,
+  clients: Array<{ sessionId: string, elapsedTime: number }>,
+  maxClients: number,
+  stateSize: number,
+  locked: boolean,
+  currentTab: string,
+  sendDialogTitle: string,
+  sendDialogOpen: boolean,
+  sendToClient?: any,
+  sendType: string,
+  sendData: string,
+}
+
+export class RoomInspect extends React.Component<Props, State> {
+    state: State = {
         roomId: undefined,
         state: {},
         clients: [],
@@ -160,10 +177,20 @@ export class RoomInspect extends React.Component {
     };
 
     render() {
-        const client_columns = [
-            { id: "sessionId", field: "sessionId", headerName: "sessionId", flex: 1 },
+        const client_columns: GridColDef[] = [
             {
-                id: "actions",
+                field: "sessionId",
+                headerName: "sessionId",
+                flex: 1,
+            },
+            {
+                field: "elapsedTime",
+                headerName: "elapsedTime",
+                flex: 1,
+                valueFormatter: valueFormatter.elapsedTime,
+                sortComparator: gridNumberComparator
+            } as GridColDef,
+            {
                 field: "actions",
                 headerName: "actions",
                 flex: 1,
@@ -180,7 +207,12 @@ export class RoomInspect extends React.Component {
             }
         ]
         const client_rows = this.state.clients.map(client => {
-            return { id: client.sessionId, sessionId: client.sessionId, actions: client.sessionId };
+            return {
+                id: client.sessionId,
+                sessionId: client.sessionId,
+                elapsedTime: client.elapsedTime,
+                actions: client.sessionId,
+            };
         });
 
         return (

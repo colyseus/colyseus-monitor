@@ -1,6 +1,6 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.15.6",
+  "version": "0.16.0-preview.1",
   "description": "Web Monitoring Panel for Colyseus",
   "input": "./src/index.ts",
   "main": "./build/index.js",
@@ -30,8 +30,8 @@
   },
   "homepage": "https://github.com/colyseus/colyseus#readme",
   "devDependencies": {
-    "@colyseus/core": "^0.15.0",
-    "@colyseus/playground": "^0.15.7",
+    "@colyseus/core": "^0.16.0-preview.0",
+    "@colyseus/playground": "^0.16.0-preview.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
@@ -43,7 +43,7 @@
     "@types/react": "^18.2.38",
     "@types/react-router-dom": "^4.2.6",
     "@types/superagent": "^3.5.8",
-    "colyseus": "^0.15.15",
+    "colyseus": "^0.16.0-preview.0",
     "css-loader": "^0.28.11",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
