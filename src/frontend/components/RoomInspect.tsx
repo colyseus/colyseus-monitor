@@ -41,7 +41,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
-import { valueFormatter } from "../helpers/helpers";
+import { humanizeElapsedTime, valueFormatter } from "../helpers/helpers";
 
 // fetch room data every 5 seconds.
 const FETCH_DATA_INTERVAL = 5000;
@@ -63,6 +63,8 @@ interface State {
   sendType: string,
   sendData: string,
 }
+
+const elapsedTimeFormatter = (params) => humanizeElapsedTime(Number(params.value))
 
 export class RoomInspect extends React.Component<Props, State> {
     state: State = {
@@ -187,7 +189,7 @@ export class RoomInspect extends React.Component<Props, State> {
                 field: "elapsedTime",
                 headerName: "elapsedTime",
                 flex: 1,
-                valueFormatter: valueFormatter.elapsedTime,
+                valueFormatter: elapsedTimeFormatter,
                 sortComparator: gridNumberComparator
             } as GridColDef,
             {
