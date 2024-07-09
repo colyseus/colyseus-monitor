@@ -40,7 +40,7 @@ function getStateSize(room) {
     const data = this.getAvailableData();
     const clients = this.clients.map((client: Client & ClientPrivate) => ({
         sessionId: client.sessionId,
-        elapsedTime: client._joinedAt - roomElapsedTime
+        elapsedTime: roomElapsedTime - client._joinedAt
     }));
     const locked = this.locked;
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import type { MonitorOptions } from "../../";
 import { fetchRoomList, remoteRoomCall } from "../services";
 
-import { Card, Button } from '@mui/material';
+import { Card, Button, mobileStepperClasses, getModalUtilityClass } from '@mui/material';
 import { DataGrid, GridColDef, gridDateComparator, gridNumberComparator, gridStringOrNumberComparator } from '@mui/x-data-grid';
 import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -95,7 +95,7 @@ export class RoomList extends React.Component {
 
     let postProcessValue: any = undefined;
 
-    if (field === "elapsedTime") {
+    if (field === "elapsedTime" && valueFromObject[field] >= 0) {
       postProcessValue = (milliseconds) => new Date( Date.now() - milliseconds );
 
     } else if (column.metadata && room.metadata) {

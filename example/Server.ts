@@ -2,12 +2,14 @@ import express from "express";
 import { createServer } from "http";
 import { Server, Room, matchMaker } from "colyseus";
 import { monitor } from "../src/index";
+import { playground } from "@colyseus/playground";
 
 const port = 2567;
 const app = express();
 
 app.use(express.json());
 app.use("/", monitor());
+app.use("/playground", playground());
 
 const gameServer = new Server({ server: createServer(app) });
 
@@ -15,8 +17,13 @@ const gameServer = new Server({ server: createServer(app) });
  * Define your room handlers:
  */
 gameServer.define("my_room", class MyRoom extends Room {
-  autoDispose = false;
+  // autoDispose = false;
   maxClients = 8;
+
+  // onCreate() {
+  //   this.autoDispose = false;
+  // }
+
 });
 gameServer.listen(port).then(async () => {
   console.log(`Listening on http://localhost:${port}`)

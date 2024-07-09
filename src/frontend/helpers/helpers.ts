@@ -3,7 +3,11 @@ import type { MonitorOptions } from "../../";
 export type ExtractStringNames<T> = T extends (infer U)[] ? U extends string ? U : never : never;
 
 export const valueFormatter: { [key in ExtractStringNames<MonitorOptions['columns']>]?: Function } = {
-  elapsedTime: (params) => humanizeElapsedTime(Date.now() - params.value.getTime())
+  elapsedTime: (params) => {
+    const elapsedTime = params.value?.getTime?.();
+    if (!elapsedTime) { return ""; }
+    return humanizeElapsedTime(Date.now() - params.value.getTime());
+  }
 }
 
 export function humanizeElapsedTime(milliseconds: number) {
