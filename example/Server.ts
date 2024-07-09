@@ -15,8 +15,13 @@ const gameServer = new Server({ server: createServer(app) });
  * Define your room handlers:
  */
 gameServer.define("my_room", class MyRoom extends Room {
-  autoDispose = false;
+  // autoDispose = false;
   maxClients = 8;
+
+  // onCreate() {
+  //   this.autoDispose = false;
+  // }
+
 });
 gameServer.listen(port).then(async () => {
   console.log(`Listening on http://localhost:${port}`)

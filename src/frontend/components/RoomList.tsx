@@ -2,7 +2,7 @@ import * as React from "react";
 import type { MonitorOptions } from "../../";
 import { fetchRoomList, remoteRoomCall } from "../services";
 
-import { Card, Button } from '@mui/material';
+import { Card, Button, mobileStepperClasses, getModalUtilityClass } from '@mui/material';
 import { DataGrid, GridColDef, gridDateComparator, gridNumberComparator, gridStringOrNumberComparator } from '@mui/x-data-grid';
 import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -33,7 +33,9 @@ const sortComparator: { [key in ExtractStringNames<MonitorOptions['columns']>]?:
 
 const valueFormatter: { [key in ExtractStringNames<MonitorOptions['columns']>]?: Function } = {
   elapsedTime: (params) => {
-    const milliseconds = Date.now() - params.value.getTime()
+    const elapsedTime = params.value.getTime && params.value.getTime();
+    if (!elapsedTime) { return ""; }
+    const milliseconds = Date.now() - elapsedTime;
     if (milliseconds < 0) { return ""; }
     let temp = Math.floor(milliseconds / 1000);
     const years = Math.floor(temp / 31536000);
@@ -113,7 +115,7 @@ export class RoomList extends React.Component {
 
     let postProcessValue: any = undefined;
 
-    if (field === "elapsedTime") {
+    if (field === "elapsedTime" && valueFromObject[field] >= 0) {
       postProcessValue = (milliseconds) => new Date( Date.now() - milliseconds );
 
     } else if (column.metadata && room.metadata) {
