@@ -1,9 +1,9 @@
-import { matchMaker } from "@colyseus/core";
+import { matchMaker } from '@colyseus/core';
 
-import express from "express";
-import osUtils from "node-os-utils";
+import express from 'express';
+import osUtils from 'node-os-utils';
 
-import { MonitorOptions } from ".";
+import type { MonitorOptions } from './index.js';
 
 const UNAVAILABLE_ROOM_ERROR = "@colyseus/monitor: room $roomId is not available anymore.";
 

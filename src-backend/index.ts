@@ -1,8 +1,8 @@
 import express from 'express';
-import path from "path";
+import path from 'path';
 
-import { getAPI } from './api';
-import './ext/Room';
+import { getAPI } from './api.js';
+import './ext/Room.js';
 
 const frontendDirectory = path.resolve(__dirname, "..", "build", "static");
 
