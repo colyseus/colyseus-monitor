@@ -72,9 +72,13 @@ export class RoomList extends React.Component {
     this.fetchRoomList();
   }
 
+  componentWillUnmount(): void {
+    clearInterval(this.updateRoomListInterval);
+  }
+
   async fetchRoomList () {
     try {
-      this.setState((await fetchRoomList()).body);
+      this.setState((await fetchRoomList()));
 
     } catch (err) {
       console.error(err)
@@ -82,8 +86,9 @@ export class RoomList extends React.Component {
 
     clearInterval(this.updateRoomListInterval);
 
-    this.updateRoomListInterval = window.setInterval(() =>
-      this.fetchRoomList(), UPDATE_ROOM_LIST_INTERVAL);
+    this.updateRoomListInterval = window.setInterval(() => {
+      this.fetchRoomList();
+    }, UPDATE_ROOM_LIST_INTERVAL);
   }
 
   handleRowSelection = (selectedRows) => {

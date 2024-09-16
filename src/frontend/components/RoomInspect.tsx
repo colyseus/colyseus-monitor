@@ -73,7 +73,7 @@ export class RoomInspect extends React.Component {
         const roomId = (this.props as any).match.params.roomId;
 
         fetchRoomData(roomId).
-            then((response) => this.setState(response.body)).
+            then((data) => this.setState(data)).
             catch((err) => console.error(err));
 
         // re-set fetch interval
@@ -85,7 +85,7 @@ export class RoomInspect extends React.Component {
         const roomId = (this.props as any).match.params.roomId
 
         return remoteRoomCall(roomId, method, ...args).
-            then((response) => console.log(response.body)).
+            then((response) => console.log(response)).
             catch((err) => console.error(err));
     }
 
@@ -179,7 +179,7 @@ export class RoomInspect extends React.Component {
                 }
             }
         ]
-        const client_rows = this.state.clients.map(client => {
+        const client_rows = this.state.clients.map((client: any) => {
             return { id: client.sessionId, sessionId: client.sessionId, actions: client.sessionId };
         });
 

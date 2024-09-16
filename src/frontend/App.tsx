@@ -29,7 +29,7 @@ export function App () {
                 <CssBaseline />
                 <CAppBar />
                 <Route exact path="/" component={RoomList} />
-                 <Route path="/room/:roomId" component={RoomInspect} />
+                <Route path="/room/:roomId" component={RoomInspect} />
             </ThemeProvider>
         </Router>
     );

@@ -2,12 +2,13 @@
     "compilerOptions": {
         "outDir": "build",
         "module": "commonjs",
-        "lib": ["es6", "dom"],
-        "target": "es6",
+        "lib": ["ES2022", "DOM"],
+        "target": "ES2022",
         "declaration": true,
         "noImplicitAny": false,
         "esModuleInterop": true,
         "experimentalDecorators": true,
+        "useDefineForClassFields": false,
         "sourceMap": false,
         "skipLibCheck": true,
         "jsx": "react"

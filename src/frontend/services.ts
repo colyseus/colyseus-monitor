@@ -1,25 +1,23 @@
-/// <reference lib="dom" />
-
-import http from "superagent";
-
 const ENDPOINT = (
   process.env.GAME_SERVER_URL ||
   `${window.location.protocol}//${window.location.host}${window.location.pathname}`
 ).replace(/\/$/, ""); // remove trailing slash
 
 export function fetchRoomList () {
-    return http.get(`${ENDPOINT}/api`).
-      accept('application/json');
+    return fetch(`${ENDPOINT}/api`)
+      .then(res => res.json());
 }
 
 export function fetchRoomData (roomId: string) {
-    return http.get(`${ENDPOINT}/api/room`).
-        query({ roomId }).
-        accept('application/json');
+    return fetch(`${ENDPOINT}/api/room?roomId=${roomId}`)
+      .then(res => res.json());
 }
 
 export function remoteRoomCall(roomId: string, method: string, ...args: any[]) {
-    return http.get(`${ENDPOINT}/api/room/call`).
-        query({ roomId, method, args: JSON.stringify(args) }).
-        accept('application/json');
+    const query = new URLSearchParams();
+    query.set('roomId', roomId);
+    query.set('method', method);
+    query.set('args', JSON.stringify(args));
+    return fetch(`${ENDPOINT}/api/room/call?${query.toString()}`)
+      .then(res => res.json());
 }

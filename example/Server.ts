@@ -2,6 +2,11 @@ import express from "express";
 import { createServer } from "http";
 import { Server, Room, matchMaker } from "colyseus";
 import { monitor } from "../src/index";
+import { Schema, type } from "@colyseus/schema";
+
+class MyState extends Schema {
+  @type("string") dummy: string = Math.random().toString();
+}
 
 const port = 2567;
 const app = express();
@@ -14,13 +19,13 @@ const gameServer = new Server({ server: createServer(app) });
 /**
  * Define your room handlers:
  */
-gameServer.define("my_room", class MyRoom extends Room {
-  // autoDispose = false;
+gameServer.define("my_room", class MyRoom extends Room<MyState> {
+  autoDispose = false;
   maxClients = 8;
 
-  // onCreate() {
-  //   this.autoDispose = false;
-  // }
+  onCreate() {
+    this.setState(new MyState());
+  }
 
 });
 gameServer.listen(port).then(async () => {
