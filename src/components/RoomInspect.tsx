@@ -27,7 +27,7 @@ import {
     Box
 } from '@mui/material';
 
-import { DataGrid, GridColDef, gridDateComparator, gridNumberComparator } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, gridNumberComparator } from '@mui/x-data-grid';
 
 import {
     TabContext,
@@ -63,8 +63,6 @@ interface State {
   sendType: string,
   sendData: string,
 }
-
-const elapsedTimeFormatter = (params) => humanizeElapsedTime(Number(params.value))
 
 export class RoomInspect extends React.Component<Props, State> {
     state: State = {
@@ -189,7 +187,7 @@ export class RoomInspect extends React.Component<Props, State> {
                 field: "elapsedTime",
                 headerName: "elapsedTime",
                 flex: 1,
-                valueFormatter: elapsedTimeFormatter,
+                valueFormatter: valueFormatter.elapsedTime,
                 sortComparator: gridNumberComparator
             } as GridColDef,
             {

@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { Server, Room, matchMaker } from "colyseus";
-import { monitor } from "../src/index";
+import { monitor } from "../build/index.js";
 import { playground } from "@colyseus/playground";
 import { Schema, type } from "@colyseus/schema";
 

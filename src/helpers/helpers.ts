@@ -4,9 +4,11 @@ export type ExtractStringNames<T> = T extends (infer U)[] ? U extends string ? U
 
 export const valueFormatter: { [key in ExtractStringNames<MonitorOptions['columns']>]?: Function } = {
   elapsedTime: (params) => {
-    const elapsedTime = params.value?.getTime?.();
-    if (!elapsedTime) { return ""; }
-    return humanizeElapsedTime(Date.now() - params.value.getTime());
+    if (params.value && params.value.getTime) {
+      return humanizeElapsedTime(Date.now() - params.value.getTime());
+    } else {
+      return "";
+    }
   }
 }
 
