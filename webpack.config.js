@@ -16,7 +16,7 @@ module.exports = function(options) {
   return {
     mode: MODE,
 
-    entry: path.resolve("src", "frontend", "index.tsx"),
+    entry: path.resolve("src", "index.tsx"),
 
     output: {
       path: __dirname + "/build/static",
@@ -40,7 +40,7 @@ module.exports = function(options) {
       }),
       new ExtractTextPlugin("styles.css"),
       new HtmlWebpackPlugin({
-        template: path.resolve("src", "frontend", "index.html")
+        template: path.resolve("src", "index.html")
       }),
     ],
 

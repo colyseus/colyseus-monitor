@@ -14,9 +14,9 @@
         "jsx": "react"
     },
     "include": [
-      "src/**/*.ts"
+      "src-backend/**/*.ts"
     ],
     "exclude": [
-      "src/frontend/**"
+      "src/**"
     ]
 }
