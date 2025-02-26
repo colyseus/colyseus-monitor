@@ -4,7 +4,9 @@ import path from 'path';
 import { getAPI } from './api.js';
 import './ext/Room.js';
 
-const frontendDirectory = path.resolve(__dirname, "..", "build", "static");
+// __dirname is not available in ESM
+const getDirname = () => (typeof __dirname !== 'undefined') ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const frontendDirectory = path.resolve(getDirname(), "..", "build", "static");
 
 export interface MonitorOptions {
     columns: Array<
