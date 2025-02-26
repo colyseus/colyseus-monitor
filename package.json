@@ -1,11 +1,18 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "Web Monitoring Panel for Colyseus",
   "input": "./src/index.ts",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
   "typings": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",,
+      "import": "./build/index.mjs",
+      "require": "./build/index.js"
+    }
+  },
   "scripts": {
     "start": "ts-node example/Server.ts",
     "build": "node build.mjs && NODE_OPTIONS=--openssl-legacy-provider webpack --env.production",
