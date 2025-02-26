@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { getAPI } from './api.js';
 import './ext/Room.js';
