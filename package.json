@@ -1,6 +1,6 @@
 {
   "name": "@colyseus/monitor",
-  "version": "0.16.2",
+  "version": "0.16.6",
   "description": "Web Monitoring Panel for Colyseus",
   "input": "./src/index.ts",
   "main": "./build/index.js",
@@ -52,7 +52,7 @@
     "@types/superagent": "^3.5.8",
     "colyseus": "^0.16.0",
     "css-loader": "^0.28.11",
-    "esbuild": "^0.23.0",
+    "esbuild": "^0.25.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "fast-glob": "^3.3.2",
     "file-loader": "^1.1.11",

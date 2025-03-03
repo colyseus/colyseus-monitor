@@ -1,14 +1,13 @@
 import express from 'express';
 import path from 'path';
+
+// required for ESM support. (esbuild uses it)
 import { fileURLToPath } from 'url';
 
 import { getAPI } from './api.js';
 import './ext/Room.js';
 
-// __dirname is not available in ESM
-// @ts-ignore
-const getDirname = () => (typeof __dirname !== 'undefined') ? __dirname : path.dirname(fileURLToPath(import.meta.url));
-const frontendDirectory = path.resolve(getDirname(), "..", "build", "static");
+const frontendDirectory = path.resolve(__dirname, "..", "build", "static");
 
 export interface MonitorOptions {
     columns: Array<
